@@ -1,0 +1,32 @@
+---
+description: Use shadcn UI for all UI elements; init if missing
+globs: next-app/**/*.tsx, next-app/**/*.ts
+alwaysApply: false
+---
+
+# shadcn UI
+
+This project uses **shadcn UI** for all UI elements.
+
+## When shadcn is not initialized
+
+If shadcn UI is not set up (no `components.json` with shadcn schema in the app directory, or missing `shadcn` / related deps in `package.json`), run:
+
+```bash
+npx shadcn@latest init
+```
+
+## Adding components
+
+Add new components when needed with:
+
+```bash
+npx shadcn@latest add <component>
+```
+
+## Consistency
+
+Keep usage consistent with the existing setup in `next-app/components.json`:
+
+- **Aliases**: `@/components`, `@/components/ui`, `@/lib/utils`, `@/lib`, `@/hooks`
+- Import UI components from `@/components/ui` and utilities from `@/lib/utils`.
