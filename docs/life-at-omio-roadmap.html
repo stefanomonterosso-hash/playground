@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Omio — Training, nesting &amp; ramp (through mid-year)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #dfe8f2;
+      --bg-glow: #f0f5fa;
+      --header: #0f2744;
+      --road-edge: #2a2e35;
+      --line: #c5cad6;
+      --card: #ffffff;
+      --text: #1a1f26;
+      --muted: #5c6675;
+      --pin1: #1e4a7a;
+      --pin2: #4a8fc9;
+      --pin3: #e07b39;
+      --pin4: #c45a1f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Work Sans", system-ui, sans-serif;
+      color: var(--text);
+      background-color: #c8d8e8;
+      position: relative;
+    }
+
+    /* Vector travel scene: sky, city, buses + flight — no raster image */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .ambient-bg svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    body > :not(.ambient-bg) {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes ambient-drift {
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(12px, -6px);
+      }
+    }
+
+    @keyframes ambient-dash {
+      to {
+        stroke-dashoffset: -80;
+      }
+    }
+
+    .ambient-plane {
+      animation: ambient-drift 14s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 36px 8px;
+    }
+
+    .ambient-contrail {
+      animation: ambient-dash 22s linear infinite;
+    }
+
+    @keyframes ambient-bus-shuttle {
+      0%,
+      100% {
+        transform: translateX(calc(-1 * clamp(36px, 4.5vw, 100px)));
+      }
+      50% {
+        transform: translateX(clamp(36px, 4.5vw, 100px));
+      }
+    }
+
+    @keyframes ambient-bus-shuttle-rev {
+      0%,
+      100% {
+        transform: translateX(clamp(28px, 3.5vw, 80px));
+      }
+      50% {
+        transform: translateX(calc(-1 * clamp(28px, 3.5vw, 80px)));
+      }
+    }
+
+    .ambient-bus--front {
+      animation: ambient-bus-shuttle 22s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 50% 90%;
+    }
+
+    .ambient-bus--back {
+      animation: ambient-bus-shuttle-rev 30s ease-in-out infinite;
+      animation-delay: -6s;
+      transform-box: fill-box;
+      transform-origin: 50% 90%;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.75rem;
+      background: linear-gradient(180deg, #142d4d 0%, var(--header) 100%);
+      color: #e8eef5;
+      box-shadow: 0 4px 24px rgba(15, 39, 68, 0.35);
+    }
+
+    .top-bar-lead {
+      display: flex;
+      align-items: center;
+      gap: 1rem 1.35rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .top-bar-logo-link {
+      flex-shrink: 0;
+      line-height: 0;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .top-bar-logo-link:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    .top-bar-logo-img {
+      height: clamp(28px, 4.5vw, 40px);
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      font-family: "Work Sans", system-ui, sans-serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      min-width: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7ec8e3;
+      box-shadow: 0 0 12px rgba(126, 200, 227, 0.8);
+    }
+
+    .intro {
+      max-width: 52rem;
+      margin: 1.75rem auto 0;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    .intro p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .intro .hint {
+      margin-top: 0.65rem;
+      font-size: 0.8rem;
+      font-style: italic;
+      color: #8892a0;
+    }
+
+    /* Horizontal scroll only — vertical overflow must stay visible or cards open upward get clipped */
+    .roadmap-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      padding: 2.5rem 0 12rem;
+      margin-top: 1rem;
+    }
+
+    .roadmap-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .roadmap-scroll::-webkit-scrollbar-thumb {
+      background: #c5cad6;
+      border-radius: 4px;
+    }
+
+    .roadmap-wrap {
+      width: min(100%, 1280px);
+      min-width: min(100%, 720px);
+      margin: 0 auto;
+      padding: 0 1rem 1rem;
+      overflow: visible;
+    }
+
+    /* Same aspect ratio as SVG viewBox → percentage positions match the curve */
+    .road-canvas {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1200 / 480;
+      min-height: 240px;
+      overflow: visible;
+    }
+
+    .road-canvas svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .road-shadow {
+      filter: drop-shadow(0 10px 6px rgba(0, 0, 0, 0.16));
+    }
+
+    .milestones-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .milestone {
+      --pin: var(--pin1);
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%);
+      width: min(260px, 42vw);
+      max-width: 280px;
+      pointer-events: auto;
+      z-index: 1;
+    }
+
+    .milestone.is-open {
+      z-index: 20;
+    }
+
+    .pin-hit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0 auto;
+      padding: 0.35rem 0.5rem 0.5rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 12px;
+      color: inherit;
+      font: inherit;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .pin-hit:hover {
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    .pin-hit:focus-visible {
+      outline: 2px solid var(--pin);
+      outline-offset: 3px;
+    }
+
+    .milestone.is-open .pin-hit {
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .pin {
+      width: 30px;
+      height: 30px;
+      background: var(--pin);
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      border: 3px solid #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .milestone.is-open .pin {
+      transform: rotate(-45deg) scale(1.08);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+    }
+
+    .pin-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      color: var(--pin);
+      white-space: nowrap;
+    }
+
+    .tap-hint {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #0f2744;
+      text-shadow:
+        0 0 6px rgba(255, 255, 255, 0.95),
+        0 0 10px rgba(255, 255, 255, 0.75),
+        0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .milestone.is-open .tap-hint {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    .connector {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      background: var(--line);
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Connector always between pin and card (card opens below the pin) */
+    .milestone .connector {
+      top: calc(100% - 0.25rem);
+      bottom: auto;
+      height: 0.85rem;
+    }
+
+    .milestone.is-open .connector {
+      opacity: 1;
+    }
+
+    .card {
+      position: absolute;
+      left: 50%;
+      width: 100%;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 0 1.05rem;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 14px 40px rgba(15, 39, 68, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateX(-50%) translateY(8px) scale(0.97);
+      max-height: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.28s ease,
+        transform 0.28s ease,
+        max-height 0.35s ease,
+        padding 0.35s ease,
+        visibility 0s linear 0.35s;
+    }
+
+    /* All detail cards open below the pin so nothing grows into a clipped top band */
+    .milestone .card {
+      top: calc(100% + 0.95rem);
+      bottom: auto;
+      transform-origin: 50% 0%;
+    }
+
+    .milestone.is-open .card {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      max-height: min(30rem, 86vh);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 1.1rem 1rem 1.15rem 1.1rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(15, 39, 68, 0.22) transparent;
+      transform: translateX(-50%) translateY(0) scale(1);
+      transition:
+        opacity 0.28s ease,
+        transform 0.28s ease,
+        max-height 0.4s ease,
+        padding 0.35s ease,
+        visibility 0s linear 0s;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar-track {
+      background: transparent;
+      margin: 6px 0;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar-thumb {
+      background: rgba(15, 39, 68, 0.2);
+      border-radius: 5px;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 39, 68, 0.35);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .icon-box {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--pin) 18%, white);
+      color: var(--pin);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-box--emoji {
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .icon-box--emoji .icon-emoji {
+      display: block;
+      line-height: 1;
+      font-style: normal;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pin);
+    }
+
+    .card h3 {
+      margin: 0.15rem 0 0;
+      font-family: "Work Sans", system-ui, sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .card p {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .card-providers {
+      margin: 0.5rem 0 0;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .card-providers strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .card li {
+      margin-bottom: 0.28rem;
+    }
+
+    .card li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Four stops through mid-year — spaced along the winding road */
+    .m1 { --pin: var(--pin1); --x: 11%; --y: 60%; }
+    .m2 { --pin: var(--pin2); --x: 38%; --y: 46%; }
+    .m3 { --pin: var(--pin3); --x: 62%; --y: 55%; }
+    .m4 { --pin: var(--pin4); --x: 88%; --y: 44%; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card,
+      .pin,
+      .pin-hit,
+      .connector {
+        transition: none;
+      }
+
+      .ambient-plane,
+      .ambient-contrail,
+      .ambient-bus--front,
+      .ambient-bus--back {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg" aria-hidden="true">
+    <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="amb-sky" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#f2f7fb" />
+          <stop offset="38%" stop-color="#ddeaf4" />
+          <stop offset="100%" stop-color="#b9cee2" />
+        </linearGradient>
+        <radialGradient id="amb-glow" cx="78%" cy="8%" r="55%">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0.55" />
+          <stop offset="55%" stop-color="#c8ddf0" stop-opacity="0.2" />
+          <stop offset="100%" stop-color="#b9cee2" stop-opacity="0" />
+        </radialGradient>
+        <linearGradient id="amb-bus" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#f0a090" />
+          <stop offset="100%" stop-color="#d86b5a" />
+        </linearGradient>
+        <linearGradient id="amb-building" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#8aa8c4" />
+          <stop offset="100%" stop-color="#5c7fa0" />
+        </linearGradient>
+        <filter id="amb-soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" />
+        </filter>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#amb-sky)" />
+      <rect width="1600" height="1000" fill="url(#amb-glow)" />
+
+      <!-- Distant flight arc -->
+      <path
+        class="ambient-contrail"
+        d="M 60 280 Q 520 100 1240 240"
+        fill="none"
+        stroke="rgba(255,255,255,0.65)"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-dasharray="14 28"
+        stroke-dashoffset="0"
+      />
+      <g transform="translate(1188 232) rotate(-6)">
+        <g class="ambient-plane">
+          <path d="M0 0 L72 8 L0 16 L18 8 Z" fill="#142a42" opacity="0.42" />
+          <path d="M28 -20 L38 8 L28 36 L48 8 Z" fill="#142a42" opacity="0.38" />
+        </g>
+      </g>
+
+      <!-- Abstract city -->
+      <g opacity="0.55">
+        <rect x="0" y="620" width="1600" height="380" fill="#9eb6cc" />
+        <rect x="40" y="480" width="120" height="520" rx="4" fill="url(#amb-building)" />
+        <rect x="200" y="420" width="95" height="580" rx="4" fill="#7c9ab8" />
+        <rect x="330" y="520" width="140" height="480" rx="4" fill="url(#amb-building)" />
+        <rect x="500" y="380" width="110" height="620" rx="4" fill="#6d8faf" />
+        <rect x="640" y="450" width="90" height="550" rx="4" fill="#8aa8c4" />
+        <rect x="780" y="500" width="130" height="500" rx="4" fill="#7598b8" />
+        <rect x="960" y="400" width="100" height="600" rx="4" fill="#5c7fa0" />
+        <rect x="1100" y="460" width="150" height="540" rx="4" fill="#7c9ab8" />
+        <rect x="1290" y="520" width="110" height="480" rx="4" fill="#8aa8c4" />
+        <rect x="1440" y="440" width="160" height="560" rx="4" fill="#6d8faf" />
+      </g>
+      <!-- Building highlights (windows) -->
+      <g opacity="0.18" fill="#fff" filter="url(#amb-soft)">
+        <rect x="220" y="460" width="8" height="12" rx="1" />
+        <rect x="240" y="460" width="8" height="12" rx="1" />
+        <rect x="220" y="490" width="8" height="12" rx="1" />
+        <rect x="530" y="420" width="10" height="14" rx="1" />
+        <rect x="550" y="420" width="10" height="14" rx="1" />
+        <rect x="990" y="440" width="9" height="12" rx="1" />
+      </g>
+
+      <!-- Foreground bus (coral, Omio-adjacent accent) -->
+      <g transform="translate(140 698)">
+        <g class="ambient-bus--front">
+          <rect x="0" y="8" width="340" height="96" rx="16" fill="url(#amb-bus)" />
+          <rect x="0" y="8" width="340" height="96" rx="16" fill="none" stroke="#b85545" stroke-width="1" opacity="0.35" />
+          <rect x="28" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
+          <rect x="86" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
+          <rect x="144" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
+          <rect x="202" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
+          <rect x="260" y="28" width="56" height="44" rx="5" fill="rgba(60,100,140,0.45)" />
+          <circle cx="72" cy="112" r="24" fill="#2a3544" />
+          <circle cx="72" cy="112" r="12" fill="#5a6575" />
+          <circle cx="268" cy="112" r="24" fill="#2a3544" />
+          <circle cx="268" cy="112" r="12" fill="#5a6575" />
+        </g>
+      </g>
+
+      <!-- Mid-distance bus -->
+      <g transform="translate(920 738) scale(0.62)" opacity="0.5">
+        <g class="ambient-bus--back">
+          <rect x="0" y="8" width="340" height="96" rx="16" fill="url(#amb-bus)" />
+          <rect x="28" y="28" width="200" height="44" rx="5" fill="rgba(80,120,160,0.3)" />
+          <circle cx="72" cy="112" r="22" fill="#2a3544" />
+          <circle cx="268" cy="112" r="22" fill="#2a3544" />
+        </g>
+      </g>
+
+      <!-- Ground line -->
+      <rect x="0" y="818" width="1600" height="182" fill="url(#amb-sky)" opacity="0.35" />
+      <line x1="0" y1="818" x2="1600" y2="818" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+    </svg>
+  </div>
+
+  <header class="top-bar">
+    <div class="top-bar-lead">
+      <a class="top-bar-logo-link" href="https://www.omio.com" target="_blank" rel="noopener noreferrer" aria-label="Omio (opens in a new tab)">
+        <img class="top-bar-logo-img" src="assets/omio-logo.png" width="120" height="40" decoding="async" alt="" />
+      </a>
+      <h1>Training, nesting &amp; ramp — through mid-year</h1>
+    </div>
+    <div class="brand"><span class="brand-dot" aria-hidden="true"></span> Training roadmap</div>
+  </header>
+
+  <div class="intro">
+    <p>Channel nesting ramp and classroom topics from the training plan. Through month 3: basic changes, cancellations, and complaints. Months 4–5: complex complaints, bugs, and fraud. From mid-year: start live flight casework. Pins stay closed until you open them.</p>
+    <p class="hint">Click a pin for full detail. Press <kbd style="font-size:0.85em;padding:0.05em 0.35em;background:#e2e6ee;border-radius:4px;">Esc</kbd> to close.</p>
+  </div>
+
+  <div class="roadmap-scroll">
+    <div class="roadmap-wrap">
+      <div class="road-canvas">
+        <svg class="road-shadow" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <linearGradient id="roadGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#4a505a" />
+              <stop offset="50%" style="stop-color:#3a3f48" />
+              <stop offset="100%" style="stop-color:#323740" />
+            </linearGradient>
+          </defs>
+          <path
+            fill="none"
+            stroke="var(--road-edge)"
+            stroke-width="52"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M -40 275 C 130 268 180 125 340 205 S 540 372 700 185 S 900 75 1080 195"
+          />
+          <path
+            fill="none"
+            stroke="url(#roadGrad)"
+            stroke-width="44"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M -40 275 C 130 268 180 125 340 205 S 540 372 700 185 S 900 75 1080 195"
+          />
+          <path
+            fill="none"
+            stroke="rgba(255,255,255,0.12)"
+            stroke-width="3"
+            stroke-dasharray="14 22"
+            stroke-linecap="round"
+            d="M -40 275 C 130 268 180 125 340 205 S 540 372 700 185 S 900 75 1080 195"
+            transform="translate(0 -12)"
+          />
+        </svg>
+
+        <div class="milestones-layer">
+          <article class="milestone m1 below" data-milestone="1">
+            <button type="button" class="pin-hit" id="pin-m1" aria-expanded="false" aria-controls="card-m1">
+              <span class="pin" style="background: var(--pin1)"></span>
+              <span class="pin-label">MONTH 1</span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m1" role="region" aria-labelledby="pin-m1">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">🤓</span>
+                </div>
+                <div>
+                  <h2>Month 1</h2>
+                  <h3>Nesting &amp; training ramp</h3>
+                </div>
+              </div>
+              <p>They’ll cover the <strong>training schedule in 8 days</strong>. <strong>Nesting</strong> then runs for <strong>3 weeks</strong>, where they gradually build confidence with <strong>every channel</strong> — email, calls, and chat.</p>
+            </div>
+          </article>
+
+          <article class="milestone m2 below" data-milestone="2">
+            <button type="button" class="pin-hit" id="pin-m2" aria-expanded="false" aria-controls="card-m2">
+              <span class="pin" style="background: var(--pin2)"></span>
+              <span class="pin-label">M2–3</span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m2" role="region" aria-labelledby="pin-m2">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">🐦</span>
+                </div>
+                <div>
+                  <h2>Months 2–3</h2>
+                  <h3>Core ticket scope — basics</h3>
+                </div>
+              </div>
+              <p>Stay on simpler case types while nesting and quality routines settle.</p>
+              <p class="card-providers"><strong>Providers</strong> Renfe, Movelia, Ouigo, Iryo, Italo, Assertis.</p>
+              <ul>
+                <li>Changes and cancellations within standard paths.</li>
+                <li>Baseline complaints — templates, tone, when to escalate.</li>
+                <li>Missed request — work the process and templates through to resolution.</li>
+                <li>Apply coach and QA feedback to build speed and consistency on those basics.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="milestone m3 below" data-milestone="3">
+            <button type="button" class="pin-hit" id="pin-m3" aria-expanded="false" aria-controls="card-m3">
+              <span class="pin" style="background: var(--pin3)"></span>
+              <span class="pin-label">M4–5</span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m3" role="region" aria-labelledby="pin-m3">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">🐛</span>
+                </div>
+                <div>
+                  <h2>Months 4–5</h2>
+                  <h3>Harder complaints + bugs + fraud</h3>
+                </div>
+              </div>
+              <p>Queue mix widens: harder complaints plus new work types.</p>
+              <p class="card-providers"><strong>Providers</strong> Eurostar, Benerail, Trenitalia, SNCF.</p>
+              <ul>
+                <li>More complex complaints (still with guardrails).</li>
+                <li>Bugs — log cleanly, set expectations, hand off as per process.</li>
+                <li>Fraud — use the playbook, verification steps, and agreed escalation paths.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="milestone m4 below" data-milestone="4">
+            <button type="button" class="pin-hit" id="pin-m4" aria-expanded="false" aria-controls="card-m4">
+              <span class="pin" style="background: var(--pin4)"></span>
+              <span class="pin-label">MID-YEAR</span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m4" role="region" aria-labelledby="pin-m4">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">✈️</span>
+                </div>
+                <div>
+                  <h2>Mid-year</h2>
+                  <h3>Flights — start live handling</h3>
+                </div>
+              </div>
+              <p>Start handling <strong>live flight cases</strong> in the queue, building on the month-1 flights intro and coach support.</p>
+              <ul>
+                <li>Understand the difference between <strong>Travelfusion</strong> and <strong>Travelport</strong>.</li>
+                <li>Know <strong>when to escalate to the air team</strong> and when to resolve without an air escalation.</li>
+                <li>Learn to use <strong>Travelfusion reports</strong> as part of your workflow.</li>
+                <li>Follow the <strong>flight team</strong>’s instructions and guidance.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var milestones = document.querySelectorAll(".milestone");
+      var openClass = "is-open";
+
+      function setOpen(article, open) {
+        var btn = article.querySelector(".pin-hit");
+        var card = article.querySelector(".card");
+        if (!btn || !card) return;
+        article.classList.toggle(openClass, open);
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              article.scrollIntoView({
+                block: "nearest",
+                inline: "nearest",
+                behavior: reduce ? "auto" : "smooth",
+              });
+            });
+          });
+        }
+      }
+
+      function closeAllExcept(except) {
+        milestones.forEach(function (m) {
+          if (m !== except) setOpen(m, false);
+        });
+      }
+
+      milestones.forEach(function (article) {
+        var btn = article.querySelector(".pin-hit");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          var willOpen = !article.classList.contains(openClass);
+          if (willOpen) closeAllExcept(article);
+          setOpen(article, willOpen);
+        });
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          milestones.forEach(function (m) {
+            setOpen(m, false);
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
