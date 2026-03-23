@@ -12,6 +12,8 @@
       --bg: #dfe8f2;
       --bg-glow: #f0f5fa;
       --header: #0f2744;
+      /* Matches baked-in background of docs/assets/omio-logo.png */
+      --omio-bar-bg: #132968;
       --road-edge: #2a2e35;
       --line: #c5cad6;
       --card: #ffffff;
@@ -136,13 +138,9 @@
       justify-content: space-between;
       gap: 1rem;
       padding: 1.1rem 1.75rem;
-      background:
-        linear-gradient(105deg, rgba(126, 200, 227, 0.12) 0%, transparent 42%),
-        linear-gradient(180deg, #142d4d 0%, var(--header) 100%);
+      background: var(--omio-bar-bg);
       color: #e8eef5;
-      box-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.08) inset,
-        0 8px 32px rgba(15, 39, 68, 0.35);
+      box-shadow: 0 8px 32px rgba(15, 39, 68, 0.35);
     }
 
     .top-bar-lead {
