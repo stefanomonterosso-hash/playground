@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" aria-hidden="true">
+  <!-- German Haltestelle-style bus stop symbol (simplified) -->
+  <circle cx="64" cy="64" r="62" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <circle cx="64" cy="64" r="57" fill="#FFEB3B" stroke="#007A3D" stroke-width="10"/>
+  <text
+    x="64"
+    y="86"
+    font-family="Arial Black, Helvetica Neue, Helvetica, sans-serif"
+    font-size="58"
+    font-weight="800"
+    fill="#007A3D"
+    text-anchor="middle"
+  >H</text>
+</svg>

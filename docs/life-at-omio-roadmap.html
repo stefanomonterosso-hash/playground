@@ -396,17 +396,17 @@
       background: rgba(255, 255, 255, 0.75);
     }
 
-    .pin {
-      width: 30px;
-      height: 30px;
-      background: var(--pin);
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      border: 3px solid #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    .pin-marker {
+      width: 36px;
+      height: 36px;
+      display: block;
       flex-shrink: 0;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       animation: pin-idle-glow 2.8s ease-in-out infinite;
+      object-fit: contain;
     }
 
     @keyframes pin-idle-glow {
@@ -421,8 +421,8 @@
       }
     }
 
-    .milestone.is-open .pin {
-      transform: rotate(-45deg) scale(1.08);
+    .milestone.is-open .pin-marker {
+      transform: scale(1.08);
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
       animation: none;
     }
@@ -637,7 +637,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       .card,
-      .pin,
+      .pin-marker,
       .pin-hit,
       .connector {
         transition: none;
@@ -658,7 +658,7 @@
         animation: none;
       }
 
-      .pin {
+      .pin-marker {
         animation: none;
       }
     }
@@ -825,7 +825,7 @@
         <div class="milestones-layer">
           <article class="milestone m1 below" data-milestone="1">
             <button type="button" class="pin-hit" id="pin-m1" aria-expanded="false" aria-controls="card-m1">
-              <span class="pin" style="background: var(--pin1)"></span>
+              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
               <span class="pin-label">MONTH 1</span>
               <span class="tap-hint">Open</span>
             </button>
@@ -846,7 +846,7 @@
 
           <article class="milestone m2 below" data-milestone="2">
             <button type="button" class="pin-hit" id="pin-m2" aria-expanded="false" aria-controls="card-m2">
-              <span class="pin" style="background: var(--pin2)"></span>
+              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
               <span class="pin-label">M2–3</span>
               <span class="tap-hint">Open</span>
             </button>
@@ -874,7 +874,7 @@
 
           <article class="milestone m3 below" data-milestone="3">
             <button type="button" class="pin-hit" id="pin-m3" aria-expanded="false" aria-controls="card-m3">
-              <span class="pin" style="background: var(--pin3)"></span>
+              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
               <span class="pin-label">M4–5</span>
               <span class="tap-hint">Open</span>
             </button>
@@ -902,7 +902,7 @@
 
           <article class="milestone m4 below" data-milestone="4">
             <button type="button" class="pin-hit" id="pin-m4" aria-expanded="false" aria-controls="card-m4">
-              <span class="pin" style="background: var(--pin4)"></span>
+              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
               <span class="pin-label">MID-YEAR</span>
               <span class="tap-hint">Open</span>
             </button>
