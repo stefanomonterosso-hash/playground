@@ -99,7 +99,7 @@
       animation: ambient-dash 22s linear infinite;
     }
 
-    @keyframes ambient-bus-shuttle {
+    @keyframes ambient-train-shuttle {
       0%,
       100% {
         transform: translateX(calc(-1 * clamp(36px, 4.5vw, 100px)));
@@ -109,7 +109,7 @@
       }
     }
 
-    @keyframes ambient-bus-shuttle-rev {
+    @keyframes ambient-train-shuttle-rev {
       0%,
       100% {
         transform: translateX(clamp(28px, 3.5vw, 80px));
@@ -119,14 +119,14 @@
       }
     }
 
-    .ambient-bus--front {
-      animation: ambient-bus-shuttle 22s ease-in-out infinite;
+    .ambient-train--front {
+      animation: ambient-train-shuttle 22s ease-in-out infinite;
       transform-box: fill-box;
       transform-origin: 50% 90%;
     }
 
-    .ambient-bus--back {
-      animation: ambient-bus-shuttle-rev 30s ease-in-out infinite;
+    .ambient-train--back {
+      animation: ambient-train-shuttle-rev 30s ease-in-out infinite;
       animation-delay: -6s;
       transform-box: fill-box;
       transform-origin: 50% 90%;
@@ -645,8 +645,8 @@
 
       .ambient-plane,
       .ambient-contrail,
-      .ambient-bus--front,
-      .ambient-bus--back {
+      .ambient-train--front,
+      .ambient-train--back {
         animation: none;
       }
 
@@ -678,9 +678,9 @@
           <stop offset="55%" stop-color="#c8ddf0" stop-opacity="0.2" />
           <stop offset="100%" stop-color="#b9cee2" stop-opacity="0" />
         </radialGradient>
-        <linearGradient id="amb-bus" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#f0a090" />
-          <stop offset="100%" stop-color="#d86b5a" />
+        <linearGradient id="amb-train" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#a8c4d8" />
+          <stop offset="100%" stop-color="#6d94b0" />
         </linearGradient>
         <linearGradient id="amb-building" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#8aa8c4" />
@@ -735,30 +735,41 @@
         <rect x="990" y="440" width="9" height="12" rx="1" />
       </g>
 
-      <!-- Foreground bus (coral, Omio-adjacent accent) -->
-      <g transform="translate(140 698)">
-        <g class="ambient-bus--front">
-          <rect x="0" y="8" width="340" height="96" rx="16" fill="url(#amb-bus)" />
-          <rect x="0" y="8" width="340" height="96" rx="16" fill="none" stroke="#b85545" stroke-width="1" opacity="0.35" />
-          <rect x="28" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
-          <rect x="86" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
-          <rect x="144" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
-          <rect x="202" y="28" width="48" height="44" rx="5" fill="rgba(80,120,160,0.35)" />
-          <rect x="260" y="28" width="56" height="44" rx="5" fill="rgba(60,100,140,0.45)" />
-          <circle cx="72" cy="112" r="24" fill="#2a3544" />
-          <circle cx="72" cy="112" r="12" fill="#5a6575" />
-          <circle cx="268" cy="112" r="24" fill="#2a3544" />
-          <circle cx="268" cy="112" r="12" fill="#5a6575" />
+      <!-- Foreground train (naïf: rounded blocks, soft windows, like plane + former bus) -->
+      <g transform="translate(120 692)">
+        <g class="ambient-train--front">
+          <rect x="0" y="18" width="380" height="92" rx="18" fill="url(#amb-train)" opacity="0.92" />
+          <rect x="0" y="18" width="380" height="92" rx="18" fill="none" stroke="#4a6b82" stroke-width="1" opacity="0.38" />
+          <!-- Locomotive “nose” -->
+          <rect x="10" y="28" width="92" height="72" rx="16" fill="rgba(35, 65, 90, 0.28)" />
+          <!-- Naïf roof -->
+          <rect x="98" y="6" width="264" height="20" rx="10" fill="rgba(45, 75, 100, 0.22)" />
+          <!-- Carriage breaks (suggest couplings) -->
+          <line x1="118" y1="22" x2="118" y2="104" stroke="rgba(40, 65, 88, 0.35)" stroke-width="2" stroke-linecap="round" />
+          <line x1="248" y1="22" x2="248" y2="104" stroke="rgba(40, 65, 88, 0.35)" stroke-width="2" stroke-linecap="round" />
+          <!-- Windows -->
+          <rect x="128" y="32" width="50" height="40" rx="6" fill="rgba(80, 120, 160, 0.34)" />
+          <rect x="188" y="32" width="50" height="40" rx="6" fill="rgba(80, 120, 160, 0.34)" />
+          <rect x="258" y="32" width="50" height="40" rx="6" fill="rgba(80, 120, 160, 0.34)" />
+          <rect x="318" y="32" width="48" height="40" rx="6" fill="rgba(60, 100, 140, 0.42)" />
+          <!-- Wheels -->
+          <circle cx="58" cy="114" r="24" fill="#2a3544" />
+          <circle cx="58" cy="114" r="12" fill="#5a6575" />
+          <circle cx="188" cy="114" r="24" fill="#2a3544" />
+          <circle cx="188" cy="114" r="12" fill="#5a6575" />
+          <circle cx="318" cy="114" r="24" fill="#2a3544" />
+          <circle cx="318" cy="114" r="12" fill="#5a6575" />
         </g>
       </g>
 
-      <!-- Mid-distance bus -->
-      <g transform="translate(920 738) scale(0.62)" opacity="0.5">
-        <g class="ambient-bus--back">
-          <rect x="0" y="8" width="340" height="96" rx="16" fill="url(#amb-bus)" />
-          <rect x="28" y="28" width="200" height="44" rx="5" fill="rgba(80,120,160,0.3)" />
-          <circle cx="72" cy="112" r="22" fill="#2a3544" />
-          <circle cx="268" cy="112" r="22" fill="#2a3544" />
+      <!-- Mid-distance train -->
+      <g transform="translate(900 732) scale(0.62)" opacity="0.5">
+        <g class="ambient-train--back">
+          <rect x="0" y="18" width="380" height="92" rx="18" fill="url(#amb-train)" opacity="0.9" />
+          <rect x="24" y="32" width="220" height="40" rx="6" fill="rgba(80, 120, 160, 0.28)" />
+          <circle cx="58" cy="114" r="22" fill="#2a3544" />
+          <circle cx="188" cy="114" r="22" fill="#2a3544" />
+          <circle cx="318" cy="114" r="22" fill="#2a3544" />
         </g>
       </g>
 
