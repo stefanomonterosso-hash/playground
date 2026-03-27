@@ -1,0 +1,539 @@
+:root {
+  --omio: #132968;
+  --omio-deep: #0e1f4a;
+  --omio-mid: #162d5c;
+  --omio-light: #1e3d78;
+  --text: #f0f4fa;
+  --muted: rgba(240, 244, 250, 0.78);
+  --display: "Outfit", "Work Sans", system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Work Sans", system-ui, sans-serif;
+  color: var(--text);
+  background: linear-gradient(165deg, var(--omio-light) 0%, var(--omio) 38%, var(--omio-deep) 100%);
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.den-page {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.den-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  padding: 1.1rem 1.75rem;
+  background: var(--omio);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.den-header-lead {
+  display: flex;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.den-header-lead a {
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.den-header-lead img {
+  height: clamp(28px, 4.5vw, 40px);
+  width: auto;
+  display: block;
+}
+
+.den-title-block {
+  min-width: 0;
+}
+
+.den-kicker {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.den-title-block h1 {
+  margin: 0.15rem 0 0;
+  font-family: var(--display);
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.den-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem 1.1rem;
+}
+
+.den-nav a {
+  color: #e8eef5;
+  text-decoration: none;
+  font-family: var(--display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  opacity: 0.88;
+  padding: 0.35rem 0.45rem;
+  border-radius: 6px;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.den-nav a:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.den-nav a[aria-current="page"] {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.den-main {
+  flex: 1;
+  width: min(100%, 52rem);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3.5rem;
+}
+
+.den-lead {
+  margin: 0 0 2rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 38rem;
+}
+
+.den-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .den-cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+.den-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+  padding: 1.35rem 1.35rem 1.45rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.den-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.den-card:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.den-card-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.den-card-desc {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.den-card-cta {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  opacity: 0.95;
+}
+
+.den-placeholder {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  padding: 1.5rem 1.35rem;
+  max-width: 40rem;
+}
+
+.den-placeholder h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.den-placeholder p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.den-main--article {
+  width: min(100%, 46rem);
+}
+
+.den-prose p {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.den-prose p:last-child {
+  margin-bottom: 0;
+}
+
+.den-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 1.75rem 0 2.25rem;
+}
+
+.den-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.25rem;
+  font-family: var(--display);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  color: var(--omio-deep);
+  background: #f0f4fa;
+  border-radius: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.den-btn:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.den-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.den-btn--secondary {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.den-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.den-section {
+  margin-top: 2rem;
+  padding: 1.35rem 1.35rem 1.45rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.den-section h2 {
+  margin: 0 0 0.65rem;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.den-section p,
+.den-section ul {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.den-section ul {
+  padding-left: 1.2rem;
+}
+
+.den-section li {
+  margin-bottom: 0.4rem;
+}
+
+.den-section li:last-child {
+  margin-bottom: 0;
+}
+
+.den-prose strong,
+.den-section strong {
+  color: #f0f4fa;
+  font-weight: 600;
+}
+
+.den-note {
+  margin-top: 2rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(240, 244, 250, 0.65);
+  border-left: 3px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.den-main--wide {
+  width: min(100%, 52rem);
+}
+
+.den-about-lead {
+  margin: 0 0 2rem;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.den-about-lead strong {
+  color: #f0f4fa;
+  font-weight: 600;
+}
+
+.den-team {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+}
+
+@media (min-width: 700px) {
+  .den-team {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+  }
+}
+
+.den-person {
+  display: grid;
+  /* Fixed max width for photo column — avoids aspect-ratio + row stretch blowing out image width */
+  grid-template-columns: minmax(0, 104px) minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  align-items: start;
+  gap: 1rem 1.15rem;
+  min-height: 100%;
+  height: 100%;
+  padding: 1.25rem 1.25rem 1.35rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.den-person-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  align-self: stretch;
+}
+
+@media (max-width: 480px) {
+  .den-person {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .den-person-photo {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  .den-person-body {
+    text-align: left;
+  }
+}
+
+.den-person-photo {
+  margin: 0;
+  width: 100%;
+  max-width: 104px;
+  align-self: start;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  aspect-ratio: 1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.den-person-photo img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.den-person-body h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.den-person-meta {
+  margin: 0 0 0.65rem;
+  font-size: 0.82rem;
+  color: rgba(240, 244, 250, 0.7);
+  letter-spacing: 0.04em;
+}
+
+.den-person-body p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.den-fact {
+  margin-top: auto;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(240, 244, 250, 0.82);
+}
+
+.den-story h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--display);
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.den-story p {
+  margin: 0 0 0.85rem;
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.den-story p:last-child {
+  margin-bottom: 0;
+}
+
+.den-story ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.den-story li {
+  margin-bottom: 0.45rem;
+}
+
+.den-story strong {
+  color: #f0f4fa;
+  font-weight: 600;
+}
+
+.den-contact {
+  margin-top: 2.25rem;
+  padding: 1.35rem 1.35rem 1.45rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.den-contact h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.den-contact p {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.den-contact p:last-child {
+  margin-bottom: 0;
+}
+
+.den-mail {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.den-mail:hover {
+  text-decoration: underline;
+}
+
+.den-contact .den-cta-row {
+  margin: 1rem 0 0;
+}

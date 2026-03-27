@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roadmap — The Training Den · Omio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #dfe8f2;
+      --bg-glow: #f0f5fa;
+      --header: #0f2744;
+      /* Matches baked-in background of docs/assets/omio-logo.png */
+      --omio-bar-bg: #132968;
+      --road-edge: #2a2e35;
+      --line: #c5cad6;
+      --card: #ffffff;
+      --text: #1a1f26;
+      --muted: #5c6675;
+      --pin1: #1e4a7a;
+      --pin2: #4a8fc9;
+      --pin3: #e07b39;
+      --pin4: #c45a1f;
+      --display: "Outfit", "Work Sans", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Work Sans", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -12%, rgba(55, 85, 130, 0.22), transparent 58%),
+        linear-gradient(175deg, #050810 0%, #0a1426 48%, #030508 100%);
+      position: relative;
+    }
+
+    /* Fine grain — sits above the SVG scene, below page chrome */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.22;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+
+    /* Full-viewport starfield + two naïf spaceships — no raster */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .ambient-bg svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    body > :not(.ambient-bg) {
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes ambient-dash {
+      to {
+        stroke-dashoffset: -80;
+      }
+    }
+
+    .ambient-contrail {
+      animation: ambient-dash 22s linear infinite;
+    }
+
+    @keyframes ambient-ship-a {
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(28px, -14px);
+      }
+    }
+
+    @keyframes ambient-ship-b {
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(-32px, 10px);
+      }
+    }
+
+    .ambient-ship-a {
+      animation: ambient-ship-a 20s ease-in-out infinite;
+      transform-box: fill-box;
+      transform-origin: 40px 12px;
+    }
+
+    .ambient-ship-b {
+      animation: ambient-ship-b 26s ease-in-out infinite;
+      animation-delay: -7s;
+      transform-box: fill-box;
+      transform-origin: 36px 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.75rem;
+      background: var(--omio-bar-bg);
+      color: #e8eef5;
+      box-shadow: 0 8px 32px rgba(15, 39, 68, 0.35);
+    }
+
+    .top-bar-lead {
+      display: flex;
+      align-items: center;
+      gap: 1rem 1.35rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .top-bar-logo-link {
+      flex-shrink: 0;
+      line-height: 0;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .top-bar-logo-link:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 4px;
+      border-radius: 4px;
+    }
+
+    .top-bar-logo-img {
+      height: clamp(28px, 4.5vw, 40px);
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      min-width: 0;
+      line-height: 1.2;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    .den-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.65rem 1.1rem;
+    }
+
+    .den-nav a {
+      color: #e8eef5;
+      text-decoration: none;
+      font-family: var(--display);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      opacity: 0.88;
+      padding: 0.35rem 0.2rem;
+      border-radius: 6px;
+      transition: opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .den-nav a:hover {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .den-nav a[aria-current="page"] {
+      opacity: 1;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--display);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7ec8e3;
+      box-shadow: 0 0 12px rgba(126, 200, 227, 0.8);
+      animation: brand-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes brand-pulse {
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.85;
+        transform: scale(1.08);
+      }
+    }
+
+    .intro {
+      max-width: 52rem;
+      margin: 1.75rem auto 0;
+      padding: 0 1.5rem;
+      text-align: center;
+    }
+
+    .intro-inner {
+      margin: 0 auto;
+      padding: 1.1rem 1.35rem 1.25rem;
+      max-width: 46rem;
+      background: #f1f5f9;
+      border-radius: 1rem;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.8) inset,
+        0 8px 28px rgba(0, 0, 0, 0.2);
+    }
+
+    .intro .hint {
+      margin: 0;
+      font-size: 0.875rem;
+      font-style: italic;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    .intro kbd {
+      font-size: 0.85em;
+      padding: 0.15em 0.5em;
+      color: #0f172a;
+      background: #fff;
+      border-radius: 5px;
+      border: 1px solid rgba(15, 23, 42, 0.2);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* Horizontal scroll only — vertical overflow must stay visible or cards open upward get clipped */
+    .roadmap-scroll {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      padding: 2.5rem 0 12rem;
+      margin-top: 1rem;
+    }
+
+    .roadmap-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .roadmap-scroll::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, #4a5f82, #6a7fa0);
+      border-radius: 4px;
+    }
+
+    .roadmap-scroll::-webkit-scrollbar-track {
+      background: rgba(30, 45, 70, 0.5);
+      border-radius: 4px;
+    }
+
+    .roadmap-wrap {
+      width: min(100%, 1280px);
+      min-width: min(100%, 720px);
+      margin: 0 auto;
+      padding: 0 1rem 1rem;
+      overflow: visible;
+    }
+
+    /* Night sky canvas — same aspect ratio as SVG viewBox → % positions match */
+    .road-canvas {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1200 / 480;
+      min-height: 260px;
+      overflow: visible;
+      border-radius: 1rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .road-canvas svg.sky-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 1rem;
+    }
+
+    .sky-layer {
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.25));
+    }
+
+    .milestones-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    @keyframes milestone-enter {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
+      }
+    }
+
+    .milestone {
+      --pin: var(--pin1);
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%);
+      width: min(300px, 46vw);
+      max-width: 320px;
+      pointer-events: auto;
+      z-index: 1;
+      animation: milestone-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    }
+
+    /* Four constellations — left → right along the night journey */
+    .m1 {
+      --pin: var(--pin1);
+      --x: 11%;
+      --y: 60%;
+      animation-delay: 0.08s;
+    }
+    .m2 {
+      --pin: var(--pin2);
+      --x: 38%;
+      --y: 46%;
+      animation-delay: 0.2s;
+    }
+    .m3 {
+      --pin: var(--pin3);
+      --x: 62%;
+      --y: 55%;
+      animation-delay: 0.32s;
+    }
+    .m4 {
+      --pin: var(--pin4);
+      --x: 88%;
+      --y: 44%;
+      animation-delay: 0.44s;
+    }
+
+    .milestone.is-open {
+      z-index: 20;
+    }
+
+    .pin-hit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0 auto;
+      padding: 0.35rem 0.5rem 0.5rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 12px;
+      color: inherit;
+      font: inherit;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .pin-hit:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .pin-hit:focus-visible {
+      outline: 2px solid var(--pin);
+      outline-offset: 3px;
+    }
+
+    .milestone.is-open .pin-hit {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .constellation-mark {
+      width: min(128px, 32vw);
+      height: auto;
+      display: block;
+      flex-shrink: 0;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      animation: constellation-pulse 3.2s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(180, 210, 255, 0.35));
+    }
+
+    @keyframes constellation-pulse {
+      0%,
+      100% {
+        filter: drop-shadow(0 0 6px rgba(180, 210, 255, 0.3));
+      }
+      50% {
+        filter: drop-shadow(0 0 14px rgba(220, 235, 255, 0.55));
+      }
+    }
+
+    .milestone.is-open .constellation-mark {
+      transform: scale(1.05);
+      animation: none;
+      filter: drop-shadow(0 0 16px rgba(255, 245, 220, 0.65));
+    }
+
+    .pin-label {
+      font-family: var(--display);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #e8ecf4;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+      text-align: center;
+      line-height: 1.25;
+      max-width: 12rem;
+    }
+
+    .pin-label-sub {
+      display: block;
+      font-size: 0.52rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(200, 215, 235, 0.75);
+      margin-top: 0.12rem;
+    }
+
+    .tap-hint {
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #c5d4eb;
+      text-shadow:
+        0 0 8px rgba(0, 20, 50, 0.9),
+        0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .milestone.is-open .tap-hint {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    .connector {
+      position: absolute;
+      left: 50%;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(200, 220, 255, 0.55), rgba(140, 170, 220, 0.25));
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Connector always between pin and card (card opens below the pin) */
+    .milestone .connector {
+      top: calc(100% - 0.25rem);
+      bottom: auto;
+      height: 0.85rem;
+    }
+
+    .milestone.is-open .connector {
+      opacity: 1;
+    }
+
+    .card {
+      position: absolute;
+      left: 50%;
+      width: 100%;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 0 1.05rem;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.9) inset,
+        0 14px 40px rgba(15, 39, 68, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateX(-50%) translateY(8px) scale(0.97);
+      max-height: 0;
+      pointer-events: none;
+      transition:
+        opacity 0.28s ease,
+        transform 0.28s ease,
+        max-height 0.35s ease,
+        padding 0.35s ease,
+        visibility 0s linear 0.35s;
+    }
+
+    /* All detail cards open below the pin so nothing grows into a clipped top band */
+    .milestone .card {
+      top: calc(100% + 0.95rem);
+      bottom: auto;
+      transform-origin: 50% 0%;
+    }
+
+    .milestone.is-open .card {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      max-height: min(30rem, 86vh);
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 1.1rem 1rem 1.15rem 1.1rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(15, 39, 68, 0.22) transparent;
+      transform: translateX(-50%) translateY(0) scale(1);
+      transition:
+        opacity 0.28s ease,
+        transform 0.28s ease,
+        max-height 0.4s ease,
+        padding 0.35s ease,
+        visibility 0s linear 0s;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar-track {
+      background: transparent;
+      margin: 6px 0;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar-thumb {
+      background: rgba(15, 39, 68, 0.2);
+      border-radius: 5px;
+    }
+
+    .milestone.is-open .card::-webkit-scrollbar-thumb:hover {
+      background: rgba(15, 39, 68, 0.35);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .icon-box {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--pin) 18%, white);
+      color: var(--pin);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-box--emoji {
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .icon-box--emoji .icon-emoji {
+      display: block;
+      line-height: 1;
+      font-style: normal;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--pin);
+    }
+
+    .card h3 {
+      margin: 0.15rem 0 0;
+      font-family: var(--display);
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .card p {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .card-providers {
+      margin: 0.5rem 0 0;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .card-providers strong {
+      display: block;
+      margin-bottom: 0.2rem;
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .card ul {
+      margin: 0.5rem 0 0;
+      padding-left: 1.15rem;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .card li {
+      margin-bottom: 0.28rem;
+    }
+
+    .card li:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card,
+      .constellation-mark,
+      .pin-hit,
+      .connector {
+        transition: none;
+      }
+
+      .ambient-contrail,
+      .ambient-ship-a,
+      .ambient-ship-b {
+        animation: none;
+      }
+
+      .brand-dot {
+        animation: none;
+      }
+
+      .milestone {
+        animation: none;
+      }
+
+      .constellation-mark {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg" aria-hidden="true">
+    <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="amb-night" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#050810" />
+          <stop offset="40%" stop-color="#0a1426" />
+          <stop offset="100%" stop-color="#030508" />
+        </linearGradient>
+        <radialGradient id="amb-nebula" cx="32%" cy="18%" r="65%">
+          <stop offset="0%" stop-color="rgba(70, 110, 170, 0.28)" />
+          <stop offset="55%" stop-color="rgba(25, 40, 70, 0.08)" />
+          <stop offset="100%" stop-color="rgba(5, 8, 18, 0)" />
+        </radialGradient>
+        <radialGradient id="amb-milky" cx="58%" cy="42%" r="75%">
+          <stop offset="0%" stop-color="rgba(190, 205, 235, 0.1)" />
+          <stop offset="100%" stop-color="rgba(8, 12, 28, 0)" />
+        </radialGradient>
+      </defs>
+      <rect width="1600" height="1000" fill="url(#amb-night)" />
+      <rect width="1600" height="1000" fill="url(#amb-nebula)" />
+      <ellipse cx="900" cy="420" rx="780" ry="480" fill="url(#amb-milky)" opacity="0.75" />
+
+      <!-- Starfield (full viewport) -->
+      <g fill="#fff" opacity="0.88">
+        <circle cx="40" cy="60" r="1.1" />
+        <circle cx="120" cy="140" r="1.3" />
+        <circle cx="200" cy="40" r="0.9" />
+        <circle cx="280" cy="220" r="1.2" />
+        <circle cx="360" cy="100" r="1" />
+        <circle cx="440" cy="300" r="1.1" />
+        <circle cx="520" cy="80" r="1.5" />
+        <circle cx="600" cy="180" r="0.85" />
+        <circle cx="680" cy="340" r="1.2" />
+        <circle cx="760" cy="50" r="1" />
+        <circle cx="840" cy="260" r="1.3" />
+        <circle cx="920" cy="120" r="0.95" />
+        <circle cx="1000" cy="380" r="1.1" />
+        <circle cx="1080" cy="90" r="1.4" />
+        <circle cx="1160" cy="280" r="1" />
+        <circle cx="1240" cy="200" r="1.2" />
+        <circle cx="1320" cy="40" r="0.9" />
+        <circle cx="1400" cy="320" r="1.2" />
+        <circle cx="1480" cy="160" r="1.1" />
+        <circle cx="1560" cy="400" r="1" />
+        <circle cx="80" cy="380" r="1.1" />
+        <circle cx="160" cy="520" r="0.95" />
+        <circle cx="240" cy="440" r="1.2" />
+        <circle cx="320" cy="640" r="1" />
+        <circle cx="400" cy="480" r="1.3" />
+        <circle cx="480" cy="720" r="1.1" />
+        <circle cx="560" cy="560" r="0.9" />
+        <circle cx="640" cy="680" r="1.2" />
+        <circle cx="720" cy="520" r="1" />
+        <circle cx="800" cy="760" r="1.2" />
+        <circle cx="880" cy="600" r="0.85" />
+        <circle cx="960" cy="820" r="1.3" />
+        <circle cx="1040" cy="640" r="1.1" />
+        <circle cx="1120" cy="880" r="1" />
+        <circle cx="1200" cy="720" r="1.2" />
+        <circle cx="1280" cy="960" r="0.95" />
+        <circle cx="1360" cy="780" r="1.1" />
+        <circle cx="1440" cy="900" r="1.2" />
+        <circle cx="1520" cy="680" r="1" />
+        <circle cx="60" cy="680" r="1.1" />
+        <circle cx="140" cy="780" r="0.9" />
+        <circle cx="220" cy="860" r="1.2" />
+        <circle cx="300" cy="740" r="1" />
+        <circle cx="380" cy="920" r="1.2" />
+        <circle cx="460" cy="820" r="0.85" />
+        <circle cx="540" cy="940" r="1.1" />
+        <circle cx="620" cy="860" r="1.3" />
+        <circle cx="700" cy="980" r="1" />
+        <circle cx="780" cy="880" r="1.1" />
+        <circle cx="860" cy="960" r="0.95" />
+        <circle cx="940" cy="920" r="1.2" />
+        <circle cx="1020" cy="980" r="1" />
+        <circle cx="1100" cy="840" r="1.1" />
+        <circle cx="1180" cy="960" r="0.9" />
+        <circle cx="1260" cy="880" r="1.2" />
+        <circle cx="1340" cy="980" r="1" />
+        <circle cx="1420" cy="860" r="1.1" />
+        <circle cx="1500" cy="960" r="1.2" />
+        <circle cx="1580" cy="780" r="1" />
+      </g>
+      <g fill="#fff" opacity="0.42">
+        <circle cx="95" cy="250" r="0.55" />
+        <circle cx="175" cy="330" r="0.6" />
+        <circle cx="255" cy="190" r="0.5" />
+        <circle cx="335" cy="410" r="0.65" />
+        <circle cx="415" cy="270" r="0.55" />
+        <circle cx="495" cy="450" r="0.6" />
+        <circle cx="575" cy="350" r="0.5" />
+        <circle cx="655" cy="490" r="0.65" />
+        <circle cx="735" cy="230" r="0.55" />
+        <circle cx="815" cy="410" r="0.6" />
+        <circle cx="895" cy="290" r="0.5" />
+        <circle cx="975" cy="510" r="0.65" />
+        <circle cx="1055" cy="370" r="0.55" />
+        <circle cx="1135" cy="530" r="0.6" />
+        <circle cx="1215" cy="330" r="0.5" />
+        <circle cx="1295" cy="470" r="0.65" />
+        <circle cx="1375" cy="250" r="0.55" />
+        <circle cx="1455" cy="430" r="0.6" />
+        <circle cx="1535" cy="310" r="0.5" />
+        <circle cx="55" cy="550" r="0.6" />
+        <circle cx="135" cy="650" r="0.55" />
+        <circle cx="215" cy="590" r="0.5" />
+        <circle cx="295" cy="710" r="0.65" />
+        <circle cx="375" cy="630" r="0.55" />
+        <circle cx="455" cy="750" r="0.6" />
+        <circle cx="535" cy="670" r="0.5" />
+        <circle cx="615" cy="790" r="0.65" />
+        <circle cx="695" cy="710" r="0.55" />
+        <circle cx="775" cy="830" r="0.6" />
+        <circle cx="855" cy="750" r="0.5" />
+        <circle cx="935" cy="870" r="0.65" />
+        <circle cx="1015" cy="790" r="0.55" />
+        <circle cx="1095" cy="910" r="0.6" />
+        <circle cx="1175" cy="830" r="0.5" />
+        <circle cx="1255" cy="910" r="0.65" />
+        <circle cx="1335" cy="870" r="0.55" />
+        <circle cx="1415" cy="930" r="0.6" />
+        <circle cx="1495" cy="850" r="0.5" />
+        <circle cx="1575" cy="910" r="0.65" />
+      </g>
+
+      <!-- Faint ion trails -->
+      <path
+        class="ambient-contrail"
+        d="M 80 320 Q 420 240 1180 180"
+        fill="none"
+        stroke="rgba(255,255,255,0.14)"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-dasharray="10 22"
+      />
+      <path
+        class="ambient-contrail"
+        d="M 200 720 Q 600 620 1480 520"
+        fill="none"
+        stroke="rgba(255,255,255,0.1)"
+        stroke-width="1.2"
+        stroke-linecap="round"
+        stroke-dasharray="8 18"
+      />
+
+      <!-- Naïf spaceship A (larger, lower-left) -->
+      <g transform="translate(240 460) rotate(-16)">
+        <g class="ambient-ship-a">
+          <path
+            d="M -32 14 Q -72 16 -118 24"
+            fill="none"
+            stroke="rgba(120, 190, 255, 0.22)"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-dasharray="5 10"
+          />
+          <path
+            d="M 0 10 L 4 6 L 72 4 L 102 8 L 108 18 L 102 28 L 72 34 L 4 32 L 0 28 Z"
+            fill="#8a9cb4"
+            opacity="0.78"
+          />
+          <ellipse cx="56" cy="18" rx="22" ry="9" fill="rgba(160, 210, 255, 0.28)" />
+          <path d="M 102 8 L 128 8 L 108 18 L 128 28 L 102 28 Z" fill="#6d7f94" opacity="0.72" />
+          <path d="M 44 2 L 52 4 L 48 0 Z" fill="#a8b8c8" opacity="0.6" />
+          <circle cx="6" cy="18" r="3.5" fill="rgba(130, 210, 255, 0.45)" />
+          <circle cx="-4" cy="18" r="2" fill="rgba(180, 235, 255, 0.55)" />
+        </g>
+      </g>
+
+      <!-- Naïf spaceship B (smaller, upper-right, flying opposite) -->
+      <g transform="translate(1220 260) rotate(22) scale(-1, 1)">
+        <g class="ambient-ship-b">
+          <path
+            d="M -28 12 Q -60 14 -98 20"
+            fill="none"
+            stroke="rgba(140, 200, 255, 0.2)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-dasharray="4 9"
+          />
+          <path
+            d="M 0 10 L 4 6 L 58 5 L 86 9 L 92 17 L 86 25 L 58 30 L 4 28 L 0 24 Z"
+            fill="#7a8fa5"
+            opacity="0.68"
+          />
+          <ellipse cx="46" cy="16" rx="16" ry="7" fill="rgba(150, 205, 255, 0.26)" />
+          <path d="M 86 9 L 108 10 L 92 17 L 108 24 L 86 25 Z" fill="#5f6f82" opacity="0.7" />
+          <circle cx="5" cy="16" r="3" fill="rgba(120, 200, 255, 0.4)" />
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <header class="top-bar">
+    <div class="top-bar-lead">
+      <a class="top-bar-logo-link" href="https://www.omio.com" target="_blank" rel="noopener noreferrer" aria-label="Omio (opens in a new tab)">
+        <img class="top-bar-logo-img" src="../assets/omio-logo.png" width="120" height="40" decoding="async" alt="" />
+      </a>
+      <h1>Training, nesting &amp; ramp — through mid-year</h1>
+    </div>
+    <nav class="den-nav" aria-label="Training Den sections">
+      <a href="index.html">Home</a>
+      <a href="roadmap.html" aria-current="page">Roadmap</a>
+      <a href="lms.html">LMS</a>
+      <a href="about.html">About</a>
+    </nav>
+    <div class="brand"><span class="brand-dot" aria-hidden="true"></span> Training roadmap</div>
+  </header>
+
+  <div class="intro">
+    <div class="intro-inner">
+      <p class="hint">Click a constellation for full detail. Press <kbd>Esc</kbd> to close.</p>
+    </div>
+  </div>
+
+  <div class="roadmap-scroll">
+    <div class="roadmap-wrap">
+      <div class="road-canvas">
+        <svg class="sky-layer" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <defs>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#050810" />
+              <stop offset="40%" stop-color="#0a1426" />
+              <stop offset="100%" stop-color="#030508" />
+            </linearGradient>
+            <radialGradient id="skyMilky" cx="42%" cy="22%" r="75%">
+              <stop offset="0%" stop-color="rgba(200, 215, 235, 0.18)" />
+              <stop offset="45%" stop-color="rgba(120, 140, 180, 0.06)" />
+              <stop offset="100%" stop-color="rgba(5, 10, 30, 0)" />
+            </radialGradient>
+          </defs>
+          <rect width="1200" height="480" fill="url(#skyGrad)" />
+          <ellipse cx="500" cy="110" rx="620" ry="200" fill="url(#skyMilky)" opacity="0.7" />
+          <g fill="#fff" opacity="0.85">
+            <circle cx="48" cy="52" r="1.1" />
+            <circle cx="112" cy="118" r="1.4" />
+            <circle cx="178" cy="36" r="0.9" />
+            <circle cx="244" cy="210" r="1.2" />
+            <circle cx="318" cy="88" r="1" />
+            <circle cx="392" cy="302" r="1.3" />
+            <circle cx="466" cy="164" r="0.85" />
+            <circle cx="540" cy="42" r="1.1" />
+            <circle cx="614" cy="276" r="1.2" />
+            <circle cx="688" cy="132" r="1" />
+            <circle cx="762" cy="358" r="0.95" />
+            <circle cx="836" cy="74" r="1.35" />
+            <circle cx="910" cy="228" r="1.05" />
+            <circle cx="984" cy="168" r="0.9" />
+            <circle cx="1058" cy="312" r="1.2" />
+            <circle cx="1132" cy="96" r="1" />
+            <circle cx="90" cy="280" r="1.1" />
+            <circle cx="156" cy="392" r="0.8" />
+            <circle cx="222" cy="144" r="1.1" />
+            <circle cx="288" cy="356" r="1.2" />
+            <circle cx="354" cy="228" r="0.95" />
+            <circle cx="420" cy="412" r="0.85" />
+            <circle cx="486" cy="276" r="1.15" />
+            <circle cx="552" cy="188" r="1" />
+            <circle cx="618" cy="420" r="1.1" />
+            <circle cx="684" cy="52" r="0.9" />
+            <circle cx="750" cy="244" r="1.25" />
+            <circle cx="816" cy="336" r="0.95" />
+            <circle cx="882" cy="412" r="1.05" />
+            <circle cx="948" cy="48" r="1.1" />
+            <circle cx="1014" cy="388" r="0.9" />
+            <circle cx="1080" cy="256" r="1.2" />
+            <circle cx="1146" cy="444" r="0.85" />
+            <circle cx="72" cy="188" r="1" />
+            <circle cx="138" cy="448" r="1.1" />
+            <circle cx="204" cy="72" r="0.9" />
+            <circle cx="270" cy="432" r="1.15" />
+            <circle cx="336" cy="18" r="1" />
+            <circle cx="402" cy="332" r="0.85" />
+            <circle cx="468" cy="96" r="1.2" />
+            <circle cx="534" cy="388" r="0.95" />
+            <circle cx="600" cy="144" r="1.05" />
+            <circle cx="666" cy="308" r="1.1" />
+            <circle cx="732" cy="20" r="0.9" />
+            <circle cx="798" cy="188" r="1.15" />
+            <circle cx="864" cy="288" r="1" />
+            <circle cx="930" cy="356" r="0.9" />
+            <circle cx="996" cy="108" r="1.2" />
+            <circle cx="1062" cy="420" r="0.9" />
+            <circle cx="1128" cy="232" r="1.05" />
+            <circle cx="1188" cy="372" r="0.85" />
+          </g>
+          <g fill="#fff" opacity="0.45">
+            <circle cx="26" cy="120" r="0.6" />
+            <circle cx="94" cy="340" r="0.55" />
+            <circle cx="160" cy="260" r="0.65" />
+            <circle cx="226" cy="48" r="0.5" />
+            <circle cx="292" cy="188" r="0.6" />
+            <circle cx="358" cy="96" r="0.55" />
+            <circle cx="424" cy="364" r="0.65" />
+            <circle cx="490" cy="20" r="0.5" />
+            <circle cx="556" cy="320" r="0.6" />
+            <circle cx="622" cy="208" r="0.55" />
+            <circle cx="688" cy="428" r="0.65" />
+            <circle cx="754" cy="112" r="0.5" />
+            <circle cx="820" cy="268" r="0.6" />
+            <circle cx="886" cy="20" r="0.55" />
+            <circle cx="952" cy="432" r="0.65" />
+            <circle cx="1018" cy="148" r="0.5" />
+            <circle cx="1084" cy="392" r="0.6" />
+            <circle cx="1150" cy="256" r="0.55" />
+            <circle cx="1176" cy="64" r="0.5" />
+          </g>
+        </svg>
+
+        <div class="milestones-layer">
+          <article class="milestone m1 below" data-milestone="1">
+            <button type="button" class="pin-hit" id="pin-m1" aria-expanded="false" aria-controls="card-m1" aria-label="Orion constellation, Month 1 milestone">
+              <svg class="constellation-mark" viewBox="0 0 120 78" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-orion"><feGaussianBlur stdDeviation="0.8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <g stroke="rgba(255,255,255,0.55)" stroke-width="1.15" fill="none" stroke-linecap="round">
+                  <line x1="22" y1="18" x2="44" y2="38" />
+                  <line x1="44" y1="38" x2="52" y2="40" />
+                  <line x1="52" y1="40" x2="60" y2="38" />
+                  <line x1="60" y1="38" x2="82" y2="22" />
+                  <line x1="52" y1="40" x2="52" y2="52" />
+                  <line x1="44" y1="38" x2="28" y2="64" />
+                  <line x1="60" y1="38" x2="74" y2="66" />
+                </g>
+                <circle cx="22" cy="18" r="2.5" fill="#eaf2ff" filter="url(#glow-orion)" />
+                <circle cx="82" cy="22" r="2.5" fill="#eaf2ff" filter="url(#glow-orion)" />
+                <circle cx="44" cy="38" r="2.2" fill="#fff" filter="url(#glow-orion)" />
+                <circle cx="52" cy="40" r="2.2" fill="#fff" filter="url(#glow-orion)" />
+                <circle cx="60" cy="38" r="2.2" fill="#fff" filter="url(#glow-orion)" />
+                <circle cx="52" cy="52" r="1.8" fill="#d0e0ff" filter="url(#glow-orion)" />
+                <circle cx="28" cy="64" r="2.4" fill="#eaf2ff" filter="url(#glow-orion)" />
+                <circle cx="74" cy="66" r="2.6" fill="#eaf2ff" filter="url(#glow-orion)" />
+              </svg>
+              <span class="pin-label">Orion<span class="pin-label-sub">First steps · basics</span></span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m1" role="region" aria-labelledby="pin-m1">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">🤓</span>
+                </div>
+                <div>
+                  <h2>Month 1</h2>
+                  <h3>Nesting &amp; training ramp</h3>
+                </div>
+              </div>
+              <p>They’ll cover the <strong>training schedule in 8 days</strong>. <strong>Nesting</strong> then runs for <strong>3 weeks</strong>, where they gradually build confidence with <strong>every channel</strong> — email, calls, and chat.</p>
+            </div>
+          </article>
+
+          <article class="milestone m2 below" data-milestone="2">
+            <button type="button" class="pin-hit" id="pin-m2" aria-expanded="false" aria-controls="card-m2" aria-label="Cassiopeia constellation, Months 2–3 milestone">
+              <svg class="constellation-mark" viewBox="0 0 100 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-cassiopeia"><feGaussianBlur stdDeviation="0.8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <polyline
+                  points="8,46 28,14 46,44 64,12 92,46"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.52)"
+                  stroke-width="1.15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="8" cy="46" r="2.3" fill="#fff7e6" filter="url(#glow-cassiopeia)" />
+                <circle cx="28" cy="14" r="2.5" fill="#fff" filter="url(#glow-cassiopeia)" />
+                <circle cx="46" cy="44" r="2.2" fill="#fff" filter="url(#glow-cassiopeia)" />
+                <circle cx="64" cy="12" r="2.5" fill="#fff" filter="url(#glow-cassiopeia)" />
+                <circle cx="92" cy="46" r="2.3" fill="#fff7e6" filter="url(#glow-cassiopeia)" />
+              </svg>
+              <span class="pin-label">Cassiopeia<span class="pin-label-sub">Confidence · structure</span></span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m2" role="region" aria-labelledby="pin-m2">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">🐦</span>
+                </div>
+                <div>
+                  <h2>Months 2–3</h2>
+                  <h3>Core ticket scope — basics</h3>
+                </div>
+              </div>
+              <p>Stay on simpler case types while nesting and quality routines settle.</p>
+              <p class="card-providers"><strong>Providers</strong> Renfe, Movelia, Ouigo, Iryo, Italo, Assertis.</p>
+              <ul>
+                <li>Changes and cancellations within standard paths.</li>
+                <li>Baseline complaints — templates, tone, when to escalate.</li>
+                <li>Missed request — work the process and templates through to resolution.</li>
+                <li>Apply coach and QA feedback to build speed and consistency on those basics.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="milestone m3 below" data-milestone="3">
+            <button type="button" class="pin-hit" id="pin-m3" aria-expanded="false" aria-controls="card-m3" aria-label="Big Dipper constellation, Months 4–5 milestone">
+              <svg class="constellation-mark" viewBox="0 0 130 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-dipper"><feGaussianBlur stdDeviation="0.8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <polyline
+                  points="14,32 36,52 58,46 78,54 98,40 112,22 122,38"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.52)"
+                  stroke-width="1.15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="14" cy="32" r="2.2" fill="#eaf2ff" filter="url(#glow-dipper)" />
+                <circle cx="36" cy="52" r="2.3" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="58" cy="46" r="2.2" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="78" cy="54" r="2.2" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="98" cy="40" r="2.4" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="112" cy="22" r="2.5" fill="#fffef0" filter="url(#glow-dipper)" />
+                <circle cx="122" cy="38" r="2.2" fill="#eaf2ff" filter="url(#glow-dipper)" />
+              </svg>
+              <span class="pin-label">Big Dipper<span class="pin-label-sub">Hokuto · direction</span></span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m3" role="region" aria-labelledby="pin-m3">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">🐛</span>
+                </div>
+                <div>
+                  <h2>Months 4–5</h2>
+                  <h3>Harder complaints + bugs + fraud + multimodal trips</h3>
+                </div>
+              </div>
+              <p>Queue mix widens: harder complaints plus new work types, including multimodal trips.</p>
+              <p class="card-providers"><strong>Providers</strong> Eurostar, Benerail, Trenitalia, SNCF.</p>
+              <ul>
+                <li><strong>More complex complaints</strong> (still with guardrails).</li>
+                <li><strong>Bugs</strong> — log cleanly, set expectations, hand off as per process.</li>
+                <li><strong>Fraud</strong> — use the playbook, verification steps, and agreed escalation paths.</li>
+                <li><strong>Multimodal trips</strong> — journeys with several legs that may use different providers or different modes of transport; handle each leg and connections per process and coach guidance.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="milestone m4 below" data-milestone="4">
+            <button type="button" class="pin-hit" id="pin-m4" aria-expanded="false" aria-controls="card-m4" aria-label="Polaris North Star constellation, Mid-year milestone">
+              <svg class="constellation-mark" viewBox="0 0 100 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-polaris"><feGaussianBlur stdDeviation="1.2" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <!-- Ursa Minor–inspired arc; dominant Polaris (North Star) -->
+                <polyline
+                  points="22,58 34,44 50,20 66,44 78,58"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.48)"
+                  stroke-width="1.15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <line x1="50" y1="20" x2="50" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="1.1" stroke-linecap="round" />
+                <polyline
+                  points="34,44 28,62 22,72"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.38)"
+                  stroke-width="1.1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <polyline
+                  points="66,44 72,62 78,72"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.38)"
+                  stroke-width="1.1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="50" cy="20" r="5.5" fill="#fffef5" filter="url(#glow-polaris)" />
+                <circle cx="34" cy="44" r="2" fill="#dde8ff" filter="url(#glow-polaris)" />
+                <circle cx="66" cy="44" r="2" fill="#dde8ff" filter="url(#glow-polaris)" />
+                <circle cx="22" cy="58" r="1.8" fill="#c8d8f0" filter="url(#glow-polaris)" />
+                <circle cx="78" cy="58" r="1.8" fill="#c8d8f0" filter="url(#glow-polaris)" />
+                <circle cx="50" cy="38" r="1.9" fill="#eaf2ff" filter="url(#glow-polaris)" />
+                <circle cx="28" cy="62" r="1.6" fill="#b8cce8" filter="url(#glow-polaris)" />
+                <circle cx="72" cy="62" r="1.6" fill="#b8cce8" filter="url(#glow-polaris)" />
+                <circle cx="22" cy="72" r="1.5" fill="#a8bfe0" filter="url(#glow-polaris)" />
+                <circle cx="78" cy="72" r="1.5" fill="#a8bfe0" filter="url(#glow-polaris)" />
+              </svg>
+              <span class="pin-label">Polaris<span class="pin-label-sub">North Star · mastery</span></span>
+              <span class="tap-hint">Open</span>
+            </button>
+            <div class="connector" aria-hidden="true"></div>
+            <div class="card" id="card-m4" role="region" aria-labelledby="pin-m4">
+              <div class="card-top">
+                <div class="icon-box icon-box--emoji" aria-hidden="true">
+                  <span class="icon-emoji">✈️</span>
+                </div>
+                <div>
+                  <h2>Mid-year</h2>
+                  <h3>Flights — start live handling</h3>
+                </div>
+              </div>
+              <p>Start handling <strong>live flight cases</strong> in the queue, building on the month-1 flights intro and coach support.</p>
+              <ul>
+                <li>Understand the difference between <strong>Travelfusion</strong> and <strong>Travelport</strong>.</li>
+                <li>Know <strong>when to escalate to the air team</strong> and when to resolve without an air escalation.</li>
+                <li>Learn to use <strong>Travelfusion reports</strong> as part of your workflow.</li>
+                <li>Follow the <strong>flight team</strong>’s instructions and guidance.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var milestones = document.querySelectorAll(".milestone");
+      var openClass = "is-open";
+
+      function setOpen(article, open) {
+        var btn = article.querySelector(".pin-hit");
+        var card = article.querySelector(".card");
+        if (!btn || !card) return;
+        article.classList.toggle(openClass, open);
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              article.scrollIntoView({
+                block: "nearest",
+                inline: "nearest",
+                behavior: reduce ? "auto" : "smooth",
+              });
+            });
+          });
+        }
+      }
+
+      function closeAllExcept(except) {
+        milestones.forEach(function (m) {
+          if (m !== except) setOpen(m, false);
+        });
+      }
+
+      milestones.forEach(function (article) {
+        var btn = article.querySelector(".pin-hit");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          var willOpen = !article.classList.contains(openClass);
+          if (willOpen) closeAllExcept(article);
+          setOpen(article, willOpen);
+        });
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          milestones.forEach(function (m) {
+            setOpen(m, false);
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
