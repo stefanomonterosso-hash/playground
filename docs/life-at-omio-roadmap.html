@@ -36,8 +36,8 @@
       font-family: "Work Sans", system-ui, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(255, 255, 255, 0.45), transparent 50%),
-        linear-gradient(165deg, #d4e2f0 0%, #b8cce0 45%, #a8c0d8 100%);
+        radial-gradient(ellipse 90% 55% at 50% -12%, rgba(55, 85, 130, 0.22), transparent 58%),
+        linear-gradient(175deg, #050810 0%, #0a1426 48%, #030508 100%);
       position: relative;
     }
 
@@ -53,7 +53,7 @@
       mix-blend-mode: soft-light;
     }
 
-    /* Vector travel scene: sky, city, buses + flight — no raster image */
+    /* Full-viewport starfield + two naïf spaceships — no raster */
     .ambient-bg {
       position: fixed;
       inset: 0;
@@ -73,63 +73,47 @@
       z-index: 2;
     }
 
-    @keyframes ambient-drift {
-      0%,
-      100% {
-        transform: translate(0, 0);
-      }
-      50% {
-        transform: translate(12px, -6px);
-      }
-    }
-
     @keyframes ambient-dash {
       to {
         stroke-dashoffset: -80;
       }
     }
 
-    .ambient-plane {
-      animation: ambient-drift 14s ease-in-out infinite;
-      transform-box: fill-box;
-      transform-origin: 36px 8px;
-    }
-
     .ambient-contrail {
       animation: ambient-dash 22s linear infinite;
     }
 
-    @keyframes ambient-train-shuttle {
+    @keyframes ambient-ship-a {
       0%,
       100% {
-        transform: translateX(calc(-1 * clamp(36px, 4.5vw, 100px)));
+        transform: translate(0, 0);
       }
       50% {
-        transform: translateX(clamp(36px, 4.5vw, 100px));
+        transform: translate(28px, -14px);
       }
     }
 
-    @keyframes ambient-train-shuttle-rev {
+    @keyframes ambient-ship-b {
       0%,
       100% {
-        transform: translateX(clamp(28px, 3.5vw, 80px));
+        transform: translate(0, 0);
       }
       50% {
-        transform: translateX(calc(-1 * clamp(28px, 3.5vw, 80px)));
+        transform: translate(-32px, 10px);
       }
     }
 
-    .ambient-train--front {
-      animation: ambient-train-shuttle 22s ease-in-out infinite;
+    .ambient-ship-a {
+      animation: ambient-ship-a 20s ease-in-out infinite;
       transform-box: fill-box;
-      transform-origin: 50% 90%;
+      transform-origin: 40px 12px;
     }
 
-    .ambient-train--back {
-      animation: ambient-train-shuttle-rev 30s ease-in-out infinite;
-      animation-delay: -6s;
+    .ambient-ship-b {
+      animation: ambient-ship-b 26s ease-in-out infinite;
+      animation-delay: -7s;
       transform-box: fill-box;
-      transform-origin: 50% 90%;
+      transform-origin: 36px 10px;
     }
 
     .top-bar {
@@ -227,30 +211,32 @@
       margin: 0 auto;
       padding: 1.1rem 1.35rem 1.25rem;
       max-width: 46rem;
-      background: rgba(255, 255, 255, 0.42);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: #f1f5f9;
       border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.55);
+      border: 1px solid rgba(15, 23, 42, 0.12);
       box-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.9) inset,
-        0 12px 40px rgba(15, 39, 68, 0.08);
+        0 1px 0 rgba(255, 255, 255, 0.8) inset,
+        0 8px 28px rgba(0, 0, 0, 0.2);
     }
 
     .intro .hint {
       margin: 0;
-      font-size: 0.8rem;
+      font-size: 0.875rem;
       font-style: italic;
-      color: #8892a0;
+      color: #1e293b;
+      line-height: 1.5;
     }
 
     .intro kbd {
       font-size: 0.85em;
-      padding: 0.12em 0.45em;
-      background: rgba(255, 255, 255, 0.75);
+      padding: 0.15em 0.5em;
+      color: #0f172a;
+      background: #fff;
       border-radius: 5px;
-      border: 1px solid rgba(15, 39, 68, 0.12);
-      box-shadow: 0 1px 2px rgba(15, 39, 68, 0.06);
+      border: 1px solid rgba(15, 23, 42, 0.2);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+      font-style: normal;
+      font-weight: 600;
     }
 
     /* Horizontal scroll only — vertical overflow must stay visible or cards open upward get clipped */
@@ -268,12 +254,12 @@
     }
 
     .roadmap-scroll::-webkit-scrollbar-thumb {
-      background: linear-gradient(90deg, #9eb0c4, #c5cad6);
+      background: linear-gradient(90deg, #4a5f82, #6a7fa0);
       border-radius: 4px;
     }
 
     .roadmap-scroll::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(30, 45, 70, 0.5);
       border-radius: 4px;
     }
 
@@ -285,25 +271,28 @@
       overflow: visible;
     }
 
-    /* Same aspect ratio as SVG viewBox → percentage positions match the curve */
+    /* Night sky canvas — same aspect ratio as SVG viewBox → % positions match */
     .road-canvas {
       position: relative;
       width: 100%;
       aspect-ratio: 1200 / 480;
-      min-height: 240px;
+      min-height: 260px;
       overflow: visible;
+      border-radius: 1rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
     }
 
-    .road-canvas svg {
+    .road-canvas svg.sky-layer {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       display: block;
+      border-radius: 1rem;
     }
 
-    .road-shadow {
-      filter: drop-shadow(0 10px 6px rgba(0, 0, 0, 0.16));
+    .sky-layer {
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.25));
     }
 
     .milestones-layer {
@@ -330,14 +319,14 @@
       left: var(--x);
       top: var(--y);
       transform: translate(-50%, -50%);
-      width: min(260px, 42vw);
-      max-width: 280px;
+      width: min(300px, 46vw);
+      max-width: 320px;
       pointer-events: auto;
       z-index: 1;
       animation: milestone-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) backwards;
     }
 
-    /* Four stops through mid-year — spaced along the winding road */
+    /* Four constellations — left → right along the night journey */
     .m1 {
       --pin: var(--pin1);
       --x: 11%;
@@ -384,7 +373,7 @@
     }
 
     .pin-hit:hover {
-      background: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .pin-hit:focus-visible {
@@ -393,46 +382,55 @@
     }
 
     .milestone.is-open .pin-hit {
-      background: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.14);
     }
 
-    .pin-marker {
-      width: 36px;
-      height: 36px;
+    .constellation-mark {
+      width: min(128px, 32vw);
+      height: auto;
       display: block;
       flex-shrink: 0;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      animation: pin-idle-glow 2.8s ease-in-out infinite;
-      object-fit: contain;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      animation: constellation-pulse 3.2s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(180, 210, 255, 0.35));
     }
 
-    @keyframes pin-idle-glow {
+    @keyframes constellation-pulse {
       0%,
       100% {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        filter: drop-shadow(0 0 6px rgba(180, 210, 255, 0.3));
       }
       50% {
-        box-shadow:
-          0 4px 14px rgba(0, 0, 0, 0.2),
-          0 0 0 5px rgba(255, 255, 255, 0.45);
+        filter: drop-shadow(0 0 14px rgba(220, 235, 255, 0.55));
       }
     }
 
-    .milestone.is-open .pin-marker {
-      transform: scale(1.08);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+    .milestone.is-open .constellation-mark {
+      transform: scale(1.05);
       animation: none;
+      filter: drop-shadow(0 0 16px rgba(255, 245, 220, 0.65));
     }
 
     .pin-label {
-      font-size: 0.62rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      color: var(--pin);
-      white-space: nowrap;
+      font-family: var(--display);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #e8ecf4;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+      text-align: center;
+      line-height: 1.25;
+      max-width: 12rem;
+    }
+
+    .pin-label-sub {
+      display: block;
+      font-size: 0.52rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(200, 215, 235, 0.75);
+      margin-top: 0.12rem;
     }
 
     .tap-hint {
@@ -440,11 +438,10 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: #0f2744;
+      color: #c5d4eb;
       text-shadow:
-        0 0 6px rgba(255, 255, 255, 0.95),
-        0 0 10px rgba(255, 255, 255, 0.75),
-        0 1px 0 rgba(255, 255, 255, 0.9);
+        0 0 8px rgba(0, 20, 50, 0.9),
+        0 1px 2px rgba(0, 0, 0, 0.8);
     }
 
     .milestone.is-open .tap-hint {
@@ -459,7 +456,7 @@
       position: absolute;
       left: 50%;
       width: 2px;
-      background: var(--line);
+      background: linear-gradient(180deg, rgba(200, 220, 255, 0.55), rgba(140, 170, 220, 0.25));
       transform: translateX(-50%);
       opacity: 0;
       transition: opacity 0.2s ease;
@@ -637,16 +634,15 @@
 
     @media (prefers-reduced-motion: reduce) {
       .card,
-      .pin-marker,
+      .constellation-mark,
       .pin-hit,
       .connector {
         transition: none;
       }
 
-      .ambient-plane,
       .ambient-contrail,
-      .ambient-train--front,
-      .ambient-train--back {
+      .ambient-ship-a,
+      .ambient-ship-b {
         animation: none;
       }
 
@@ -658,7 +654,7 @@
         animation: none;
       }
 
-      .pin-marker {
+      .constellation-mark {
         animation: none;
       }
     }
@@ -668,114 +664,194 @@
   <div class="ambient-bg" aria-hidden="true">
     <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="amb-sky" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#f2f7fb" />
-          <stop offset="38%" stop-color="#ddeaf4" />
-          <stop offset="100%" stop-color="#b9cee2" />
+        <linearGradient id="amb-night" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#050810" />
+          <stop offset="40%" stop-color="#0a1426" />
+          <stop offset="100%" stop-color="#030508" />
         </linearGradient>
-        <radialGradient id="amb-glow" cx="78%" cy="8%" r="55%">
-          <stop offset="0%" stop-color="#fff" stop-opacity="0.55" />
-          <stop offset="55%" stop-color="#c8ddf0" stop-opacity="0.2" />
-          <stop offset="100%" stop-color="#b9cee2" stop-opacity="0" />
+        <radialGradient id="amb-nebula" cx="32%" cy="18%" r="65%">
+          <stop offset="0%" stop-color="rgba(70, 110, 170, 0.28)" />
+          <stop offset="55%" stop-color="rgba(25, 40, 70, 0.08)" />
+          <stop offset="100%" stop-color="rgba(5, 8, 18, 0)" />
         </radialGradient>
-        <linearGradient id="amb-train" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stop-color="#f0a090" />
-          <stop offset="100%" stop-color="#d86b5a" />
-        </linearGradient>
-        <linearGradient id="amb-building" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#8aa8c4" />
-          <stop offset="100%" stop-color="#5c7fa0" />
-        </linearGradient>
-        <filter id="amb-soft" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" />
-        </filter>
+        <radialGradient id="amb-milky" cx="58%" cy="42%" r="75%">
+          <stop offset="0%" stop-color="rgba(190, 205, 235, 0.1)" />
+          <stop offset="100%" stop-color="rgba(8, 12, 28, 0)" />
+        </radialGradient>
       </defs>
-      <rect width="1600" height="1000" fill="url(#amb-sky)" />
-      <rect width="1600" height="1000" fill="url(#amb-glow)" />
+      <rect width="1600" height="1000" fill="url(#amb-night)" />
+      <rect width="1600" height="1000" fill="url(#amb-nebula)" />
+      <ellipse cx="900" cy="420" rx="780" ry="480" fill="url(#amb-milky)" opacity="0.75" />
 
-      <!-- Distant flight arc -->
+      <!-- Starfield (full viewport) -->
+      <g fill="#fff" opacity="0.88">
+        <circle cx="40" cy="60" r="1.1" />
+        <circle cx="120" cy="140" r="1.3" />
+        <circle cx="200" cy="40" r="0.9" />
+        <circle cx="280" cy="220" r="1.2" />
+        <circle cx="360" cy="100" r="1" />
+        <circle cx="440" cy="300" r="1.1" />
+        <circle cx="520" cy="80" r="1.5" />
+        <circle cx="600" cy="180" r="0.85" />
+        <circle cx="680" cy="340" r="1.2" />
+        <circle cx="760" cy="50" r="1" />
+        <circle cx="840" cy="260" r="1.3" />
+        <circle cx="920" cy="120" r="0.95" />
+        <circle cx="1000" cy="380" r="1.1" />
+        <circle cx="1080" cy="90" r="1.4" />
+        <circle cx="1160" cy="280" r="1" />
+        <circle cx="1240" cy="200" r="1.2" />
+        <circle cx="1320" cy="40" r="0.9" />
+        <circle cx="1400" cy="320" r="1.2" />
+        <circle cx="1480" cy="160" r="1.1" />
+        <circle cx="1560" cy="400" r="1" />
+        <circle cx="80" cy="380" r="1.1" />
+        <circle cx="160" cy="520" r="0.95" />
+        <circle cx="240" cy="440" r="1.2" />
+        <circle cx="320" cy="640" r="1" />
+        <circle cx="400" cy="480" r="1.3" />
+        <circle cx="480" cy="720" r="1.1" />
+        <circle cx="560" cy="560" r="0.9" />
+        <circle cx="640" cy="680" r="1.2" />
+        <circle cx="720" cy="520" r="1" />
+        <circle cx="800" cy="760" r="1.2" />
+        <circle cx="880" cy="600" r="0.85" />
+        <circle cx="960" cy="820" r="1.3" />
+        <circle cx="1040" cy="640" r="1.1" />
+        <circle cx="1120" cy="880" r="1" />
+        <circle cx="1200" cy="720" r="1.2" />
+        <circle cx="1280" cy="960" r="0.95" />
+        <circle cx="1360" cy="780" r="1.1" />
+        <circle cx="1440" cy="900" r="1.2" />
+        <circle cx="1520" cy="680" r="1" />
+        <circle cx="60" cy="680" r="1.1" />
+        <circle cx="140" cy="780" r="0.9" />
+        <circle cx="220" cy="860" r="1.2" />
+        <circle cx="300" cy="740" r="1" />
+        <circle cx="380" cy="920" r="1.2" />
+        <circle cx="460" cy="820" r="0.85" />
+        <circle cx="540" cy="940" r="1.1" />
+        <circle cx="620" cy="860" r="1.3" />
+        <circle cx="700" cy="980" r="1" />
+        <circle cx="780" cy="880" r="1.1" />
+        <circle cx="860" cy="960" r="0.95" />
+        <circle cx="940" cy="920" r="1.2" />
+        <circle cx="1020" cy="980" r="1" />
+        <circle cx="1100" cy="840" r="1.1" />
+        <circle cx="1180" cy="960" r="0.9" />
+        <circle cx="1260" cy="880" r="1.2" />
+        <circle cx="1340" cy="980" r="1" />
+        <circle cx="1420" cy="860" r="1.1" />
+        <circle cx="1500" cy="960" r="1.2" />
+        <circle cx="1580" cy="780" r="1" />
+      </g>
+      <g fill="#fff" opacity="0.42">
+        <circle cx="95" cy="250" r="0.55" />
+        <circle cx="175" cy="330" r="0.6" />
+        <circle cx="255" cy="190" r="0.5" />
+        <circle cx="335" cy="410" r="0.65" />
+        <circle cx="415" cy="270" r="0.55" />
+        <circle cx="495" cy="450" r="0.6" />
+        <circle cx="575" cy="350" r="0.5" />
+        <circle cx="655" cy="490" r="0.65" />
+        <circle cx="735" cy="230" r="0.55" />
+        <circle cx="815" cy="410" r="0.6" />
+        <circle cx="895" cy="290" r="0.5" />
+        <circle cx="975" cy="510" r="0.65" />
+        <circle cx="1055" cy="370" r="0.55" />
+        <circle cx="1135" cy="530" r="0.6" />
+        <circle cx="1215" cy="330" r="0.5" />
+        <circle cx="1295" cy="470" r="0.65" />
+        <circle cx="1375" cy="250" r="0.55" />
+        <circle cx="1455" cy="430" r="0.6" />
+        <circle cx="1535" cy="310" r="0.5" />
+        <circle cx="55" cy="550" r="0.6" />
+        <circle cx="135" cy="650" r="0.55" />
+        <circle cx="215" cy="590" r="0.5" />
+        <circle cx="295" cy="710" r="0.65" />
+        <circle cx="375" cy="630" r="0.55" />
+        <circle cx="455" cy="750" r="0.6" />
+        <circle cx="535" cy="670" r="0.5" />
+        <circle cx="615" cy="790" r="0.65" />
+        <circle cx="695" cy="710" r="0.55" />
+        <circle cx="775" cy="830" r="0.6" />
+        <circle cx="855" cy="750" r="0.5" />
+        <circle cx="935" cy="870" r="0.65" />
+        <circle cx="1015" cy="790" r="0.55" />
+        <circle cx="1095" cy="910" r="0.6" />
+        <circle cx="1175" cy="830" r="0.5" />
+        <circle cx="1255" cy="910" r="0.65" />
+        <circle cx="1335" cy="870" r="0.55" />
+        <circle cx="1415" cy="930" r="0.6" />
+        <circle cx="1495" cy="850" r="0.5" />
+        <circle cx="1575" cy="910" r="0.65" />
+      </g>
+
+      <!-- Faint ion trails -->
       <path
         class="ambient-contrail"
-        d="M 60 280 Q 520 100 1240 240"
+        d="M 80 320 Q 420 240 1180 180"
         fill="none"
-        stroke="rgba(255,255,255,0.65)"
-        stroke-width="2.2"
+        stroke="rgba(255,255,255,0.14)"
+        stroke-width="1.5"
         stroke-linecap="round"
-        stroke-dasharray="14 28"
-        stroke-dashoffset="0"
+        stroke-dasharray="10 22"
       />
-      <g transform="translate(1188 232) rotate(-6)">
-        <g class="ambient-plane">
-          <path d="M0 0 L72 8 L0 16 L18 8 Z" fill="#142a42" opacity="0.42" />
-          <path d="M28 -20 L38 8 L28 36 L48 8 Z" fill="#142a42" opacity="0.38" />
+      <path
+        class="ambient-contrail"
+        d="M 200 720 Q 600 620 1480 520"
+        fill="none"
+        stroke="rgba(255,255,255,0.1)"
+        stroke-width="1.2"
+        stroke-linecap="round"
+        stroke-dasharray="8 18"
+      />
+
+      <!-- Naïf spaceship A (larger, lower-left) -->
+      <g transform="translate(240 460) rotate(-16)">
+        <g class="ambient-ship-a">
+          <path
+            d="M -32 14 Q -72 16 -118 24"
+            fill="none"
+            stroke="rgba(120, 190, 255, 0.22)"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-dasharray="5 10"
+          />
+          <path
+            d="M 0 10 L 4 6 L 72 4 L 102 8 L 108 18 L 102 28 L 72 34 L 4 32 L 0 28 Z"
+            fill="#8a9cb4"
+            opacity="0.78"
+          />
+          <ellipse cx="56" cy="18" rx="22" ry="9" fill="rgba(160, 210, 255, 0.28)" />
+          <path d="M 102 8 L 128 8 L 108 18 L 128 28 L 102 28 Z" fill="#6d7f94" opacity="0.72" />
+          <path d="M 44 2 L 52 4 L 48 0 Z" fill="#a8b8c8" opacity="0.6" />
+          <circle cx="6" cy="18" r="3.5" fill="rgba(130, 210, 255, 0.45)" />
+          <circle cx="-4" cy="18" r="2" fill="rgba(180, 235, 255, 0.55)" />
         </g>
       </g>
 
-      <!-- Abstract city -->
-      <g opacity="0.55">
-        <rect x="0" y="620" width="1600" height="380" fill="#9eb6cc" />
-        <rect x="40" y="480" width="120" height="520" rx="4" fill="url(#amb-building)" />
-        <rect x="200" y="420" width="95" height="580" rx="4" fill="#7c9ab8" />
-        <rect x="330" y="520" width="140" height="480" rx="4" fill="url(#amb-building)" />
-        <rect x="500" y="380" width="110" height="620" rx="4" fill="#6d8faf" />
-        <rect x="640" y="450" width="90" height="550" rx="4" fill="#8aa8c4" />
-        <rect x="780" y="500" width="130" height="500" rx="4" fill="#7598b8" />
-        <rect x="960" y="400" width="100" height="600" rx="4" fill="#5c7fa0" />
-        <rect x="1100" y="460" width="150" height="540" rx="4" fill="#7c9ab8" />
-        <rect x="1290" y="520" width="110" height="480" rx="4" fill="#8aa8c4" />
-        <rect x="1440" y="440" width="160" height="560" rx="4" fill="#6d8faf" />
-      </g>
-      <!-- Building highlights (windows) -->
-      <g opacity="0.18" fill="#fff" filter="url(#amb-soft)">
-        <rect x="220" y="460" width="8" height="12" rx="1" />
-        <rect x="240" y="460" width="8" height="12" rx="1" />
-        <rect x="220" y="490" width="8" height="12" rx="1" />
-        <rect x="530" y="420" width="10" height="14" rx="1" />
-        <rect x="550" y="420" width="10" height="14" rx="1" />
-        <rect x="990" y="440" width="9" height="12" rx="1" />
-      </g>
-
-      <!-- Foreground train (naïf: rounded blocks, soft windows, like plane + former bus) -->
-      <g transform="translate(120 692)">
-        <g class="ambient-train--front">
-          <rect x="0" y="18" width="380" height="92" rx="18" fill="url(#amb-train)" opacity="0.92" />
-          <rect x="0" y="18" width="380" height="92" rx="18" fill="none" stroke="#b85545" stroke-width="1" opacity="0.4" />
-          <!-- Locomotive “nose” -->
-          <rect x="10" y="28" width="92" height="72" rx="16" fill="rgba(120, 40, 45, 0.28)" />
-          <!-- Naïf roof -->
-          <rect x="98" y="6" width="264" height="20" rx="10" fill="rgba(130, 50, 48, 0.22)" />
-          <!-- Carriage breaks (suggest couplings) -->
-          <line x1="118" y1="22" x2="118" y2="104" stroke="rgba(110, 38, 38, 0.4)" stroke-width="2" stroke-linecap="round" />
-          <line x1="248" y1="22" x2="248" y2="104" stroke="rgba(110, 38, 38, 0.4)" stroke-width="2" stroke-linecap="round" />
-          <!-- Windows -->
-          <rect x="128" y="32" width="50" height="40" rx="6" fill="rgba(180, 95, 88, 0.4)" />
-          <rect x="188" y="32" width="50" height="40" rx="6" fill="rgba(180, 95, 88, 0.4)" />
-          <rect x="258" y="32" width="50" height="40" rx="6" fill="rgba(180, 95, 88, 0.4)" />
-          <rect x="318" y="32" width="48" height="40" rx="6" fill="rgba(150, 65, 62, 0.45)" />
-          <!-- Wheels -->
-          <circle cx="58" cy="114" r="24" fill="#2a3544" />
-          <circle cx="58" cy="114" r="12" fill="#5a6575" />
-          <circle cx="188" cy="114" r="24" fill="#2a3544" />
-          <circle cx="188" cy="114" r="12" fill="#5a6575" />
-          <circle cx="318" cy="114" r="24" fill="#2a3544" />
-          <circle cx="318" cy="114" r="12" fill="#5a6575" />
+      <!-- Naïf spaceship B (smaller, upper-right, flying opposite) -->
+      <g transform="translate(1220 260) rotate(22) scale(-1, 1)">
+        <g class="ambient-ship-b">
+          <path
+            d="M -28 12 Q -60 14 -98 20"
+            fill="none"
+            stroke="rgba(140, 200, 255, 0.2)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-dasharray="4 9"
+          />
+          <path
+            d="M 0 10 L 4 6 L 58 5 L 86 9 L 92 17 L 86 25 L 58 30 L 4 28 L 0 24 Z"
+            fill="#7a8fa5"
+            opacity="0.68"
+          />
+          <ellipse cx="46" cy="16" rx="16" ry="7" fill="rgba(150, 205, 255, 0.26)" />
+          <path d="M 86 9 L 108 10 L 92 17 L 108 24 L 86 25 Z" fill="#5f6f82" opacity="0.7" />
+          <circle cx="5" cy="16" r="3" fill="rgba(120, 200, 255, 0.4)" />
         </g>
       </g>
-
-      <!-- Mid-distance train -->
-      <g transform="translate(900 732) scale(0.62)" opacity="0.5">
-        <g class="ambient-train--back">
-          <rect x="0" y="18" width="380" height="92" rx="18" fill="url(#amb-train)" opacity="0.9" />
-          <rect x="24" y="32" width="220" height="40" rx="6" fill="rgba(190, 100, 92, 0.32)" />
-          <circle cx="58" cy="114" r="22" fill="#2a3544" />
-          <circle cx="188" cy="114" r="22" fill="#2a3544" />
-          <circle cx="318" cy="114" r="22" fill="#2a3544" />
-        </g>
-      </g>
-
-      <!-- Ground line -->
-      <rect x="0" y="818" width="1600" height="182" fill="url(#amb-sky)" opacity="0.35" />
-      <line x1="0" y1="818" x2="1600" y2="818" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
     </svg>
   </div>
 
@@ -791,53 +867,130 @@
 
   <div class="intro">
     <div class="intro-inner">
-      <p class="hint">Click a pin for full detail. Press <kbd>Esc</kbd> to close.</p>
+      <p class="hint">Click a constellation for full detail. Press <kbd>Esc</kbd> to close.</p>
     </div>
   </div>
 
   <div class="roadmap-scroll">
     <div class="roadmap-wrap">
       <div class="road-canvas">
-        <svg class="road-shadow" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <svg class="sky-layer" viewBox="0 0 1200 480" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
           <defs>
-            <linearGradient id="roadGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#4a505a" />
-              <stop offset="50%" style="stop-color:#3a3f48" />
-              <stop offset="100%" style="stop-color:#323740" />
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#050810" />
+              <stop offset="40%" stop-color="#0a1426" />
+              <stop offset="100%" stop-color="#030508" />
             </linearGradient>
+            <radialGradient id="skyMilky" cx="42%" cy="22%" r="75%">
+              <stop offset="0%" stop-color="rgba(200, 215, 235, 0.18)" />
+              <stop offset="45%" stop-color="rgba(120, 140, 180, 0.06)" />
+              <stop offset="100%" stop-color="rgba(5, 10, 30, 0)" />
+            </radialGradient>
           </defs>
-          <path
-            fill="none"
-            stroke="var(--road-edge)"
-            stroke-width="52"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M -40 275 C 130 268 180 125 340 205 S 540 372 700 185 S 900 75 1080 195"
-          />
-          <path
-            fill="none"
-            stroke="url(#roadGrad)"
-            stroke-width="44"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M -40 275 C 130 268 180 125 340 205 S 540 372 700 185 S 900 75 1080 195"
-          />
-          <path
-            fill="none"
-            stroke="rgba(255,255,255,0.12)"
-            stroke-width="3"
-            stroke-dasharray="14 22"
-            stroke-linecap="round"
-            d="M -40 275 C 130 268 180 125 340 205 S 540 372 700 185 S 900 75 1080 195"
-            transform="translate(0 -12)"
-          />
+          <rect width="1200" height="480" fill="url(#skyGrad)" />
+          <ellipse cx="500" cy="110" rx="620" ry="200" fill="url(#skyMilky)" opacity="0.7" />
+          <g fill="#fff" opacity="0.85">
+            <circle cx="48" cy="52" r="1.1" />
+            <circle cx="112" cy="118" r="1.4" />
+            <circle cx="178" cy="36" r="0.9" />
+            <circle cx="244" cy="210" r="1.2" />
+            <circle cx="318" cy="88" r="1" />
+            <circle cx="392" cy="302" r="1.3" />
+            <circle cx="466" cy="164" r="0.85" />
+            <circle cx="540" cy="42" r="1.1" />
+            <circle cx="614" cy="276" r="1.2" />
+            <circle cx="688" cy="132" r="1" />
+            <circle cx="762" cy="358" r="0.95" />
+            <circle cx="836" cy="74" r="1.35" />
+            <circle cx="910" cy="228" r="1.05" />
+            <circle cx="984" cy="168" r="0.9" />
+            <circle cx="1058" cy="312" r="1.2" />
+            <circle cx="1132" cy="96" r="1" />
+            <circle cx="90" cy="280" r="1.1" />
+            <circle cx="156" cy="392" r="0.8" />
+            <circle cx="222" cy="144" r="1.1" />
+            <circle cx="288" cy="356" r="1.2" />
+            <circle cx="354" cy="228" r="0.95" />
+            <circle cx="420" cy="412" r="0.85" />
+            <circle cx="486" cy="276" r="1.15" />
+            <circle cx="552" cy="188" r="1" />
+            <circle cx="618" cy="420" r="1.1" />
+            <circle cx="684" cy="52" r="0.9" />
+            <circle cx="750" cy="244" r="1.25" />
+            <circle cx="816" cy="336" r="0.95" />
+            <circle cx="882" cy="412" r="1.05" />
+            <circle cx="948" cy="48" r="1.1" />
+            <circle cx="1014" cy="388" r="0.9" />
+            <circle cx="1080" cy="256" r="1.2" />
+            <circle cx="1146" cy="444" r="0.85" />
+            <circle cx="72" cy="188" r="1" />
+            <circle cx="138" cy="448" r="1.1" />
+            <circle cx="204" cy="72" r="0.9" />
+            <circle cx="270" cy="432" r="1.15" />
+            <circle cx="336" cy="18" r="1" />
+            <circle cx="402" cy="332" r="0.85" />
+            <circle cx="468" cy="96" r="1.2" />
+            <circle cx="534" cy="388" r="0.95" />
+            <circle cx="600" cy="144" r="1.05" />
+            <circle cx="666" cy="308" r="1.1" />
+            <circle cx="732" cy="20" r="0.9" />
+            <circle cx="798" cy="188" r="1.15" />
+            <circle cx="864" cy="288" r="1" />
+            <circle cx="930" cy="356" r="0.9" />
+            <circle cx="996" cy="108" r="1.2" />
+            <circle cx="1062" cy="420" r="0.9" />
+            <circle cx="1128" cy="232" r="1.05" />
+            <circle cx="1188" cy="372" r="0.85" />
+          </g>
+          <g fill="#fff" opacity="0.45">
+            <circle cx="26" cy="120" r="0.6" />
+            <circle cx="94" cy="340" r="0.55" />
+            <circle cx="160" cy="260" r="0.65" />
+            <circle cx="226" cy="48" r="0.5" />
+            <circle cx="292" cy="188" r="0.6" />
+            <circle cx="358" cy="96" r="0.55" />
+            <circle cx="424" cy="364" r="0.65" />
+            <circle cx="490" cy="20" r="0.5" />
+            <circle cx="556" cy="320" r="0.6" />
+            <circle cx="622" cy="208" r="0.55" />
+            <circle cx="688" cy="428" r="0.65" />
+            <circle cx="754" cy="112" r="0.5" />
+            <circle cx="820" cy="268" r="0.6" />
+            <circle cx="886" cy="20" r="0.55" />
+            <circle cx="952" cy="432" r="0.65" />
+            <circle cx="1018" cy="148" r="0.5" />
+            <circle cx="1084" cy="392" r="0.6" />
+            <circle cx="1150" cy="256" r="0.55" />
+            <circle cx="1176" cy="64" r="0.5" />
+          </g>
         </svg>
 
         <div class="milestones-layer">
           <article class="milestone m1 below" data-milestone="1">
-            <button type="button" class="pin-hit" id="pin-m1" aria-expanded="false" aria-controls="card-m1">
-              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
-              <span class="pin-label">MONTH 1</span>
+            <button type="button" class="pin-hit" id="pin-m1" aria-expanded="false" aria-controls="card-m1" aria-label="Orion constellation, Month 1 milestone">
+              <svg class="constellation-mark" viewBox="0 0 120 78" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-orion"><feGaussianBlur stdDeviation="0.8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <g stroke="rgba(255,255,255,0.55)" stroke-width="1.15" fill="none" stroke-linecap="round">
+                  <line x1="22" y1="18" x2="44" y2="38" />
+                  <line x1="44" y1="38" x2="52" y2="40" />
+                  <line x1="52" y1="40" x2="60" y2="38" />
+                  <line x1="60" y1="38" x2="82" y2="22" />
+                  <line x1="52" y1="40" x2="52" y2="52" />
+                  <line x1="44" y1="38" x2="28" y2="64" />
+                  <line x1="60" y1="38" x2="74" y2="66" />
+                </g>
+                <circle cx="22" cy="18" r="2.5" fill="#eaf2ff" filter="url(#glow-orion)" />
+                <circle cx="82" cy="22" r="2.5" fill="#eaf2ff" filter="url(#glow-orion)" />
+                <circle cx="44" cy="38" r="2.2" fill="#fff" filter="url(#glow-orion)" />
+                <circle cx="52" cy="40" r="2.2" fill="#fff" filter="url(#glow-orion)" />
+                <circle cx="60" cy="38" r="2.2" fill="#fff" filter="url(#glow-orion)" />
+                <circle cx="52" cy="52" r="1.8" fill="#d0e0ff" filter="url(#glow-orion)" />
+                <circle cx="28" cy="64" r="2.4" fill="#eaf2ff" filter="url(#glow-orion)" />
+                <circle cx="74" cy="66" r="2.6" fill="#eaf2ff" filter="url(#glow-orion)" />
+              </svg>
+              <span class="pin-label">Orion<span class="pin-label-sub">First steps · basics</span></span>
               <span class="tap-hint">Open</span>
             </button>
             <div class="connector" aria-hidden="true"></div>
@@ -856,9 +1009,26 @@
           </article>
 
           <article class="milestone m2 below" data-milestone="2">
-            <button type="button" class="pin-hit" id="pin-m2" aria-expanded="false" aria-controls="card-m2">
-              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
-              <span class="pin-label">M2–3</span>
+            <button type="button" class="pin-hit" id="pin-m2" aria-expanded="false" aria-controls="card-m2" aria-label="Cassiopeia constellation, Months 2–3 milestone">
+              <svg class="constellation-mark" viewBox="0 0 100 72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-cassiopeia"><feGaussianBlur stdDeviation="0.8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <polyline
+                  points="8,46 28,14 46,44 64,12 92,46"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.52)"
+                  stroke-width="1.15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="8" cy="46" r="2.3" fill="#fff7e6" filter="url(#glow-cassiopeia)" />
+                <circle cx="28" cy="14" r="2.5" fill="#fff" filter="url(#glow-cassiopeia)" />
+                <circle cx="46" cy="44" r="2.2" fill="#fff" filter="url(#glow-cassiopeia)" />
+                <circle cx="64" cy="12" r="2.5" fill="#fff" filter="url(#glow-cassiopeia)" />
+                <circle cx="92" cy="46" r="2.3" fill="#fff7e6" filter="url(#glow-cassiopeia)" />
+              </svg>
+              <span class="pin-label">Cassiopeia<span class="pin-label-sub">Confidence · structure</span></span>
               <span class="tap-hint">Open</span>
             </button>
             <div class="connector" aria-hidden="true"></div>
@@ -884,9 +1054,28 @@
           </article>
 
           <article class="milestone m3 below" data-milestone="3">
-            <button type="button" class="pin-hit" id="pin-m3" aria-expanded="false" aria-controls="card-m3">
-              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
-              <span class="pin-label">M4–5</span>
+            <button type="button" class="pin-hit" id="pin-m3" aria-expanded="false" aria-controls="card-m3" aria-label="Big Dipper constellation, Months 4–5 milestone">
+              <svg class="constellation-mark" viewBox="0 0 130 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-dipper"><feGaussianBlur stdDeviation="0.8" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <polyline
+                  points="14,32 36,52 58,46 78,54 98,40 112,22 122,38"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.52)"
+                  stroke-width="1.15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="14" cy="32" r="2.2" fill="#eaf2ff" filter="url(#glow-dipper)" />
+                <circle cx="36" cy="52" r="2.3" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="58" cy="46" r="2.2" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="78" cy="54" r="2.2" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="98" cy="40" r="2.4" fill="#fff" filter="url(#glow-dipper)" />
+                <circle cx="112" cy="22" r="2.5" fill="#fffef0" filter="url(#glow-dipper)" />
+                <circle cx="122" cy="38" r="2.2" fill="#eaf2ff" filter="url(#glow-dipper)" />
+              </svg>
+              <span class="pin-label">Big Dipper<span class="pin-label-sub">Hokuto · direction</span></span>
               <span class="tap-hint">Open</span>
             </button>
             <div class="connector" aria-hidden="true"></div>
@@ -912,9 +1101,49 @@
           </article>
 
           <article class="milestone m4 below" data-milestone="4">
-            <button type="button" class="pin-hit" id="pin-m4" aria-expanded="false" aria-controls="card-m4">
-              <img class="pin-marker" src="assets/haltestelle-h.svg" width="36" height="36" alt="" decoding="async" />
-              <span class="pin-label">MID-YEAR</span>
+            <button type="button" class="pin-hit" id="pin-m4" aria-expanded="false" aria-controls="card-m4" aria-label="Polaris North Star constellation, Mid-year milestone">
+              <svg class="constellation-mark" viewBox="0 0 100 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <filter id="glow-polaris"><feGaussianBlur stdDeviation="1.2" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+                </defs>
+                <!-- Ursa Minor–inspired arc; dominant Polaris (North Star) -->
+                <polyline
+                  points="22,58 34,44 50,20 66,44 78,58"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.48)"
+                  stroke-width="1.15"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <line x1="50" y1="20" x2="50" y2="38" stroke="rgba(255,255,255,0.4)" stroke-width="1.1" stroke-linecap="round" />
+                <polyline
+                  points="34,44 28,62 22,72"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.38)"
+                  stroke-width="1.1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <polyline
+                  points="66,44 72,62 78,72"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.38)"
+                  stroke-width="1.1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="50" cy="20" r="5.5" fill="#fffef5" filter="url(#glow-polaris)" />
+                <circle cx="34" cy="44" r="2" fill="#dde8ff" filter="url(#glow-polaris)" />
+                <circle cx="66" cy="44" r="2" fill="#dde8ff" filter="url(#glow-polaris)" />
+                <circle cx="22" cy="58" r="1.8" fill="#c8d8f0" filter="url(#glow-polaris)" />
+                <circle cx="78" cy="58" r="1.8" fill="#c8d8f0" filter="url(#glow-polaris)" />
+                <circle cx="50" cy="38" r="1.9" fill="#eaf2ff" filter="url(#glow-polaris)" />
+                <circle cx="28" cy="62" r="1.6" fill="#b8cce8" filter="url(#glow-polaris)" />
+                <circle cx="72" cy="62" r="1.6" fill="#b8cce8" filter="url(#glow-polaris)" />
+                <circle cx="22" cy="72" r="1.5" fill="#a8bfe0" filter="url(#glow-polaris)" />
+                <circle cx="78" cy="72" r="1.5" fill="#a8bfe0" filter="url(#glow-polaris)" />
+              </svg>
+              <span class="pin-label">Polaris<span class="pin-label-sub">North Star · mastery</span></span>
               <span class="tap-hint">Open</span>
             </button>
             <div class="connector" aria-hidden="true"></div>
